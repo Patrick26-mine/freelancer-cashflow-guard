@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
-import "./Auth.css";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
+  const { login } = useAuthStore();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const login = useAuthStore((s) => s.login);
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -23,11 +23,11 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-wrapper">
+    <div className="auth-container">
       <form className="auth-card" onSubmit={handleLogin}>
         <h2>Login</h2>
 
-        {error && <p className="auth-error">{error}</p>}
+        {error && <p className="error">{error}</p>}
 
         <input
           type="email"
@@ -47,7 +47,7 @@ export default function Login() {
 
         <button type="submit">Login</button>
 
-        <p className="auth-switch">
+        <p>
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
       </form>
