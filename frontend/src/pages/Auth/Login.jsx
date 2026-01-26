@@ -1,9 +1,9 @@
-console.log("LOGIN UPDATED VERSION RUNNING");
-
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
+
+import LogoMark from "../../components/ui/LogoMark"; // ✅ Import Logo
 
 export default function Login() {
   const { login } = useAuthStore();
@@ -30,7 +30,10 @@ export default function Login() {
       <form className="auth-card" onSubmit={handleLogin}>
         {/* ✅ BRAND HEADER */}
         <div className="auth-brand">
-          <div className="auth-logo">W</div>
+          <div className="auth-logo">
+            <LogoMark size={30} />
+          </div>
+
           <h1>Freelancer Cashflow Guard</h1>
           <p>Login to continue</p>
         </div>

@@ -3,11 +3,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import "./Auth.css";
 
+import LogoMark from "../../components/ui/LogoMark"; // ✅ Import Logo
+
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
   const signup = useAuthStore((s) => s.signup);
   const navigate = useNavigate();
 
@@ -28,7 +31,15 @@ export default function Signup() {
   return (
     <div className="auth-wrapper">
       <form className="auth-card" onSubmit={handleSignup}>
-        <h2>Sign up</h2>
+        {/* ✅ BRAND HEADER */}
+        <div className="auth-brand">
+          <div className="auth-logo">
+            <LogoMark size={30} />
+          </div>
+
+          <h1>Create Account</h1>
+          <p>Start using Cashflow Guard</p>
+        </div>
 
         {error && <p className="auth-error">{error}</p>}
         {message && <p className="auth-success">{message}</p>}
