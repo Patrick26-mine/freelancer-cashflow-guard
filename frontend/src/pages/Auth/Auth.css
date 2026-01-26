@@ -73,3 +73,13 @@
   color: red;
   margin-bottom: 10px;
 }
+.auth-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #fef3c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px auto;
+}
