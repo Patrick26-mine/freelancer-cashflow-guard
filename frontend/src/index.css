@@ -103,3 +103,9 @@
 .empty {
   @apply text-center py-8 text-gray-400;
 }
+html, body, #root {
+  height: 100%;
+}
+html, body, #root {
+  height: 100%;
+}

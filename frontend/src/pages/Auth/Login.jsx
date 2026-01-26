@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate, Link } from "react-router-dom";
+import "./Auth.css";
 
 export default function Login() {
   const { login } = useAuthStore();
@@ -25,7 +26,12 @@ export default function Login() {
   return (
     <div className="auth-container">
       <form className="auth-card" onSubmit={handleLogin}>
-        <h2>Login</h2>
+        {/* ✅ BRAND HEADER */}
+        <div className="auth-brand">
+          <div className="auth-logo">W</div>
+          <h1>Freelancer Cashflow Guard</h1>
+          <p>Login to continue</p>
+        </div>
 
         {error && <p className="error">{error}</p>}
 
@@ -47,7 +53,7 @@ export default function Login() {
 
         <button type="submit">Login</button>
 
-        <p>
+        <p className="auth-footer">
           Don’t have an account? <Link to="/signup">Sign up</Link>
         </p>
       </form>
