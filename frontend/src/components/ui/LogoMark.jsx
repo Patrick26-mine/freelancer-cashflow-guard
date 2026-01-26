@@ -8,7 +8,7 @@ export default function LogoMark({ size = 52 }) {
     >
       <path
         d="M20 15 L35 85 L50 40 L65 85 L80 15"
-        stroke="#1f1f1f"
+stroke="#2f1d14"
         strokeWidth="8"
         strokeLinejoin="round"
       />

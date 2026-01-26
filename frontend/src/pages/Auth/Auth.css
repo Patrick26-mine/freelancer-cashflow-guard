@@ -74,12 +74,14 @@
   margin-bottom: 10px;
 }
 .auth-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: #fef3c7;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px; /* ✅ rounded square premium */
+  background: #fff7d6;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 14px auto;
+  margin: 0 auto 16px auto;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }

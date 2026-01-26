@@ -1,3 +1,5 @@
+console.log("LOGIN UPDATED VERSION RUNNING");
+
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate, Link } from "react-router-dom";
