@@ -1,0 +1,150 @@
+.profile-page {
+  padding: 40px;
+  min-height: 100%;
+}
+
+/* ===== PAGE HEADER ===== */
+.profile-headline {
+  margin-bottom: 22px;
+}
+
+.profile-headline h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+  color: #2f1d14;
+}
+
+.profile-headline p {
+  margin-top: 6px;
+  font-size: 14px;
+  color: rgba(80, 40, 20, 0.65);
+}
+
+/* ===== MAIN CARD ===== */
+.profile-card {
+  max-width: 760px;
+
+  /* Premium glass */
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(240, 200, 170, 0.35);
+  border-radius: 22px;
+
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== HERO TOP ===== */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Perfect circle fix */
+.avatar-circle {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  min-height: 62px;
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.92);
+  color: white;
+
+  font-weight: 800;
+  font-size: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-email {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2f1d14;
+}
+
+.hero-status {
+  font-size: 13px;
+  margin-top: 3px;
+  color: rgba(80, 40, 20, 0.65);
+}
+
+/* ===== SECTIONS ===== */
+.profile-section {
+  margin-top: 18px;
+}
+
+.profile-section h4 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: #2f1d14;
+}
+
+/* ===== INFO ROWS ===== */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px 0;
+  font-size: 14px;
+  color: #3a2419;
+}
+
+.info-row code {
+  font-size: 12px;
+  background: rgba(251, 191, 36, 0.15);
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #3a2419;
+}
+
+.info-row strong {
+  font-weight: 700;
+}
+
+/* ===== INPUT ===== */
+.input {
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 240px;
+
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.premium-disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ===== COMING SOON ===== */
+.coming-soon {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.035);
+  margin-bottom: 8px;
+
+  font-size: 13px;
+  color: rgba(90, 50, 30, 0.6);
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  margin: 22px 0;
+  border-bottom: 1px solid rgba(240, 200, 170, 0.35);
+}

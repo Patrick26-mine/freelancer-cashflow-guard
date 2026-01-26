@@ -1,0 +1,105 @@
+/* ===== AUTH PAGES ===== */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fb;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.auth-card h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #111827;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  background: #000;
+}
+
+.auth-footer {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== SaaS UI helpers ===== */
+
+.input {
+  @apply w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500;
+}
+
+.th {
+  @apply px-4 py-3 text-left font-medium text-gray-600;
+}
+
+.td {
+  @apply px-4 py-3;
+}
+
+.pill {
+  @apply px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.pill.green {
+  @apply bg-green-100 text-green-700;
+}
+
+.pill.red {
+  @apply bg-red-100 text-red-700;
+}
+
+.pill.yellow {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.btn-edit {
+  @apply px-3 py-1 rounded-md bg-indigo-100 text-indigo-700;
+}
+
+.btn-delete {
+  @apply px-3 py-1 rounded-md bg-red-100 text-red-700;
+}
+
+.empty {
+  @apply text-center py-8 text-gray-400;
+}

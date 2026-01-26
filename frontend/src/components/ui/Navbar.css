@@ -1,0 +1,25 @@
+.navbar {
+  height: 64px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /* Premium pastel background (same as dashboard) */
+  background: transparent;
+
+  /* Minimal separator */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.3px;
+}
+
+/* Empty spacer (keeps layout balanced) */
+.navbar-spacer {
+  width: 1px;
+}
