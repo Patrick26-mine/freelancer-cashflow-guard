@@ -83,22 +83,26 @@ export default function Settings() {
     setTimeout(() => setStatus(""), 4000);
   };
 
-  // ============================
-  // Password Reset Email
-  // ============================
-  const sendPasswordReset = async () => {
-    setStatus("Sending reset email...");
+// ============================
+// Password Reset Email (With Redirect)
+// ============================
+const sendPasswordReset = async () => {
+  setStatus("Sending reset email...");
 
-    const { error } = await supabase.auth.resetPasswordForEmail(user.email);
+  const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+    redirectTo:
+      "https://freelancer-cashflow-guard.vercel.app/reset-password",
+  });
 
-    if (error) {
-      setStatus("Error sending reset email ❌");
-    } else {
-      setStatus("Password reset email sent ✅");
-    }
+  if (error) {
+    setStatus("Error sending reset email ❌ " + error.message);
+  } else {
+    setStatus("Password reset email sent ✅ Check inbox.");
+  }
 
-    setTimeout(() => setStatus(""), 3000);
-  };
+  setTimeout(() => setStatus(""), 4000);
+};
+
 
   if (loading) {
     return (

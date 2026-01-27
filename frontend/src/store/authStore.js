@@ -42,10 +42,14 @@ export const useAuthStore = create((set) => ({
      LOGIN
   ======================== */
   login: async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: "https://freelancer-cashflow-guard.vercel.app/login"
+  }
+});
+
 
     if (error) throw error;
 
