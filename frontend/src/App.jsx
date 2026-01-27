@@ -5,6 +5,7 @@ import { useAuthStore } from "./store/authStore";
 /* AUTH PAGES */
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
+import ResetPassword from "./pages/Auth/ResetPassword";
 
 /* DASHBOARD LAYOUT */
 import DashboardLayout from "./components/dashboard/DashboardLayout";
@@ -43,6 +44,7 @@ export default function App() {
           path="/signup"
           element={user ? <Navigate to="/" replace /> : <Signup />}
         />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* ===================== */}
         {/* PROTECTED DASHBOARD */}
