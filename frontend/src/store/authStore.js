@@ -20,23 +20,23 @@ export const useAuthStore = create((set) => ({
      SIGN UP
   ======================== */
   signup: async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-    if (error) throw error;
+  if (error) throw error;
 
-    // Create profile row after signup
-    if (data.user) {
-      await supabase.from("profiles").insert({
-        id: data.user.id,
-        email: data.user.email,
-      });
-    }
+  // ✅ Auto Create Profile Row
+  await supabase.from("user_profiles").insert({
+    user_id: data.user.id,
+    username: email.split("@")[0], // default username
+    avatar_url: null,
+  });
 
-    return data;
-  },
+  return data;
+},
+
 
   /* ========================
      LOGIN

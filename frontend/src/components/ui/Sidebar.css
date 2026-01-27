@@ -270,3 +270,16 @@
 .profile-menu button.danger {
   color: rgba(180, 40, 40, 0.9);
 }
+@media (max-width: 768px) {
+  .sidebar {
+    width: 64px !important;
+  }
+
+  .brand-text {
+    display: none;
+  }
+
+  .nav-item span {
+    display: none;
+  }
+}

@@ -27,11 +27,30 @@ export default function Sidebar() {
 
   const [openMenu, setOpenMenu] = useState(false);
 
-  const avatarLetter = user?.email?.[0]?.toUpperCase() || "U";
+const [profile, setProfile] = useState(null);
 
-  // ✅ Logout Handler
+useEffect(() => {
+  if (!user) return;
+
+  supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("user_id", user.id)
+    .single()
+    .then(({ data }) => setProfile(data));
+}, [user]);
+
+const avatarLetter =
+  profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase();
+
+  // ✅ Logout Handler (FIXED)
   const handleLogout = async () => {
     await supabase.auth.signOut();
+
+    // ✅ Clear Zustand user state
+    useAuthStore.getState().logout();
+
+    // ✅ Redirect to login
     navigate("/login");
   };
 
@@ -49,12 +68,7 @@ export default function Sidebar() {
         <div className="brand">
           {/* Embedded Logo */}
           <div className="brand-mark">
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 100 100"
-              fill="none"
-            >
+            <svg width="26" height="26" viewBox="0 0 100 100" fill="none">
               <path
                 d="M20 15 L35 85 L50 40 L65 85 L80 15"
                 stroke="#1f1f1f"
@@ -84,26 +98,55 @@ export default function Sidebar() {
             </svg>
           </div>
 
-          {!isCollapsed && (
-            <span className="brand-text">Cashflow Guard</span>
-          )}
+          {!isCollapsed && <span className="brand-text">Cashflow Guard</span>}
         </div>
       </div>
 
       {/* ===== NAV ===== */}
       <nav className="sidebar-nav">
-        <NavItem to="/" label="Dashboard" icon={<Home size={20} />} active={location.pathname === "/"} collapsed={isCollapsed} />
-        <NavItem to="/clients" label="Clients" icon={<Users size={20} />} active={location.pathname === "/clients"} collapsed={isCollapsed} />
-        <NavItem to="/invoices" label="Invoices" icon={<FileText size={20} />} active={location.pathname === "/invoices"} collapsed={isCollapsed} />
-        <NavItem to="/payments" label="Payments" icon={<CreditCard size={20} />} active={location.pathname === "/payments"} collapsed={isCollapsed} />
-        <NavItem to="/reminders" label="Reminders" icon={<Bell size={20} />} active={location.pathname === "/reminders"} collapsed={isCollapsed} />
-<NavItem
-  to="/settings"
-  label="Settings"
-  icon={<Settings size={20} />}
-  active={location.pathname === "/settings"}
-  collapsed={isCollapsed}
-/>
+        <NavItem
+          to="/"
+          label="Dashboard"
+          icon={<Home size={20} />}
+          active={location.pathname === "/"}
+          collapsed={isCollapsed}
+        />
+        <NavItem
+          to="/clients"
+          label="Clients"
+          icon={<Users size={20} />}
+          active={location.pathname === "/clients"}
+          collapsed={isCollapsed}
+        />
+        <NavItem
+          to="/invoices"
+          label="Invoices"
+          icon={<FileText size={20} />}
+          active={location.pathname === "/invoices"}
+          collapsed={isCollapsed}
+        />
+        <NavItem
+          to="/payments"
+          label="Payments"
+          icon={<CreditCard size={20} />}
+          active={location.pathname === "/payments"}
+          collapsed={isCollapsed}
+        />
+        <NavItem
+          to="/reminders"
+          label="Reminders"
+          icon={<Bell size={20} />}
+          active={location.pathname === "/reminders"}
+          collapsed={isCollapsed}
+        />
+
+        <NavItem
+          to="/settings"
+          label="Settings"
+          icon={<Settings size={20} />}
+          active={location.pathname === "/settings"}
+          collapsed={isCollapsed}
+        />
       </nav>
 
       {/* ===== PROFILE DROPDOWN FOOTER ===== */}
@@ -112,12 +155,18 @@ export default function Sidebar() {
           className="profile-trigger"
           onClick={() => setOpenMenu(!openMenu)}
         >
-          <div className="mini-avatar">{avatarLetter}</div>
+<div className="mini-avatar">
+  {profile?.avatar_url ? (
+    <img src={profile.avatar_url} alt="avatar" />
+  ) : (
+    avatarLetter
+  )}
+</div>
 
           {!isCollapsed && (
             <>
               <div className="profile-meta">
-                <p className="profile-email">{user?.email}</p>
+<p className="profile-email">{profile?.username}</p>
                 <span className="profile-role">Account</span>
               </div>
               <ChevronUp size={18} />
