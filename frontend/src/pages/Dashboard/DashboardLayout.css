@@ -26,3 +26,15 @@
   /* ✅ THIS is the key */
   background: transparent;
 }
+.dashboard-content {
+  flex: 1;
+  padding: 32px;
+}
+
+/* ✅ Mobile Fix */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 18px;
+    margin-left: 0;
+  }
+}

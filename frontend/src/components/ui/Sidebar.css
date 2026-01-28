@@ -12,7 +12,7 @@
 
   border-right: 1px solid rgba(255, 200, 150, 0.35);
 
-  /* ✅ Rounded Corners like reference */
+  /* ✅ Rounded Corners */
   border-radius: 22px;
   margin: 14px;
 }
@@ -20,7 +20,7 @@
 /* Smooth fade blending at bottom */
 .sidebar::after {
   content: "";
-  position:  relative;
+  position: relative;
   bottom: 0;
   left: 0;
   height: 90px;
@@ -52,14 +52,6 @@
   font-weight: 700;
 }
 
-/* ✅ Logo Icon */
-.brand-logo {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
 .brand-text {
   font-size: 15px;
   font-weight: 700;
@@ -67,45 +59,14 @@
   letter-spacing: 0.4px;
 }
 
-/* ===== USER ===== */
-.sidebar-user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(240, 200, 170, 0.4);
-}
-
-.profile-avatar {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;   /* ✅ prevents shrinking */
-  min-height: 38px;
-  border-radius: 50%;
-
-  background: rgba(99, 102, 241, 0.95);
-  color: white;
-
-  font-weight: 700;
+/* Logo mark wrapper */
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  flex-shrink: 0;    /* ✅ stops oval distortion */
-}
-
-.user-email {
-  font-size: 13px;
-  font-weight: 600;
-  color: #3a2419;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-role {
-  font-size: 11px;
-  color: rgba(90, 50, 30, 0.7);
 }
 
 /* ===== NAV ===== */
@@ -144,57 +105,13 @@
   font-weight: 600;
 }
 
-/* ===== FOOTER LOGOUT ===== */
+/* ===== PROFILE FOOTER ===== */
 .sidebar-footer {
   padding: 14px;
   border-top: 1px solid rgba(240, 200, 170, 0.35);
 }
 
-.logout-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  padding: 11px;
-  border: none;
-  border-radius: 14px;
-
-  background: rgba(239, 68, 68, 0.12);
-  color: rgba(180, 40, 40, 0.9);
-
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.logout-btn:hover {
-  background: rgba(239, 68, 68, 0.18);
-}
-
-/* ===== COLLAPSED ===== */
-.sidebar.collapsed .brand-text,
-.sidebar.collapsed .user-info {
-  display: none;
-}
-
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-}
-
-.sidebar.collapsed .logout-btn span {
-  display: none;
-}
-.brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/* ===== PROFILE DROPDOWN ===== */
+/* Profile trigger */
 .profile-trigger {
   display: flex;
   align-items: center;
@@ -224,7 +141,7 @@
   align-items: center;
   justify-content: center;
 
-  flex-shrink: 0;    /* ✅ critical */
+  flex-shrink: 0;
 }
 
 .profile-meta {
@@ -243,6 +160,7 @@
   color: rgba(80, 40, 20, 0.6);
 }
 
+/* Dropdown menu */
 .profile-menu {
   margin-top: 8px;
   display: flex;
@@ -270,16 +188,66 @@
 .profile-menu button.danger {
   color: rgba(180, 40, 40, 0.9);
 }
+
+/* ===== COLLAPSED MODE ===== */
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .profile-meta,
+.sidebar.collapsed .profile-menu {
+  display: none;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+}
+
+/* ================================================= */
+/* ✅ FINAL MOBILE FIX (NO CONFLICTS) */
+/* ================================================= */
 @media (max-width: 768px) {
+  /* Sidebar becomes bottom navigation */
   .sidebar {
-    width: 64px !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 72px;
+
+    flex-direction: row;
+    justify-content: space-around;
+
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+
+    z-index: 999;
   }
 
-  .brand-text {
+  /* Hide branding + profile */
+  .sidebar-top,
+  .sidebar-footer {
     display: none;
+  }
+
+  /* Horizontal nav */
+  .sidebar-nav {
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    padding: 0;
+  }
+
+  .nav-item {
+    margin: 0;
+    justify-content: center;
   }
 
   .nav-item span {
     display: none;
+  }
+
+  /* Prevent dashboard hiding behind nav */
+  .dashboard-page {
+    padding-bottom: 90px !important;
   }
 }

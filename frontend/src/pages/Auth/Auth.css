@@ -91,3 +91,20 @@
   place-items: center;
   background: #f6f7f9;
 }
+.password-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrap input {
+  width: 100%;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.7;
+}
