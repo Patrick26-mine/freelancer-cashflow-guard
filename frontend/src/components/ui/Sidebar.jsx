@@ -15,7 +15,7 @@ import { useSidebarStore } from "../../store/sidebarStore";
 import { useAuthStore } from "../../store/authStore";
 import { supabase } from "../../lib/supabaseClient";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ✅ FIXED HERE
 import "../ui/Sidebar.css";
 
 export default function Sidebar() {
@@ -27,21 +27,22 @@ export default function Sidebar() {
 
   const [openMenu, setOpenMenu] = useState(false);
 
-const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(null);
 
-useEffect(() => {
-  if (!user) return;
+  useEffect(() => {
+    if (!user) return;
 
-  supabase
-    .from("user_profiles")
-    .select("*")
-    .eq("user_id", user.id)
-    .single()
-    .then(({ data }) => setProfile(data));
-}, [user]);
+    supabase
+      .from("user_profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => setProfile(data));
+  }, [user]);
 
-const avatarLetter =
-  profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase();
+  const avatarLetter =
+    profile?.username?.[0]?.toUpperCase() ||
+    user?.email?.[0]?.toUpperCase();
 
   // ✅ Logout Handler (FIXED)
   const handleLogout = async () => {
@@ -155,18 +156,18 @@ const avatarLetter =
           className="profile-trigger"
           onClick={() => setOpenMenu(!openMenu)}
         >
-<div className="mini-avatar">
-  {profile?.avatar_url ? (
-    <img src={profile.avatar_url} alt="avatar" />
-  ) : (
-    avatarLetter
-  )}
-</div>
+          <div className="mini-avatar">
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="avatar" />
+            ) : (
+              avatarLetter
+            )}
+          </div>
 
           {!isCollapsed && (
             <>
               <div className="profile-meta">
-<p className="profile-email">{profile?.username}</p>
+                <p className="profile-email">{profile?.username}</p>
                 <span className="profile-role">Account</span>
               </div>
               <ChevronUp size={18} />
