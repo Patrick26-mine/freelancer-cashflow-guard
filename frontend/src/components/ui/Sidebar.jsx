@@ -41,8 +41,7 @@ export default function Sidebar() {
   }, [user]);
 
   const avatarLetter =
-    profile?.username?.[0]?.toUpperCase() ||
-    user?.email?.[0]?.toUpperCase();
+    profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase();
 
   // ✅ Logout Handler (FIXED)
   const handleLogout = async () => {
@@ -67,7 +66,6 @@ export default function Sidebar() {
       {/* ===== BRAND ===== */}
       <div className="sidebar-top">
         <div className="brand">
-          {/* Embedded Logo */}
           <div className="brand-mark">
             <svg width="26" height="26" viewBox="0 0 100 100" fill="none">
               <path
@@ -140,7 +138,6 @@ export default function Sidebar() {
           active={location.pathname === "/reminders"}
           collapsed={isCollapsed}
         />
-
         <NavItem
           to="/settings"
           label="Settings"
@@ -175,7 +172,6 @@ export default function Sidebar() {
           )}
         </div>
 
-        {/* Dropdown */}
         {openMenu && !isCollapsed && (
           <div className="profile-menu">
             <button onClick={() => navigate("/profile")}>
