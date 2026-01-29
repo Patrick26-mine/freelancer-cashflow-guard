@@ -2,34 +2,49 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(to bottom, #fff7ed, #fefce8);
+  background: linear-gradient(
+    to bottom right,
+    #fff7ed,
+    #fefce8,
+    #ecfeff
+  );
 }
 
 .dashboard-main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
 }
 
 .dashboard-page {
-  padding: 30px;
+  padding: 28px;
+  width: 100%;
+  min-height: 100vh;
 }
 
-/* ✅ MOBILE FIX */
+/* ✅ Mobile Fix */
 @media (max-width: 768px) {
-
-  .dashboard-shell {
-    flex-direction: column;
-  }
-
   .dashboard-page {
-    padding: 18px;
-    padding-bottom: 100px; /* Space for bottom nav */
+    padding: 16px;
+    padding-bottom: 100px; /* space for bottom nav */
   }
 }
-/* ✅ MOBILE SAFE SPACE (so content not hidden behind bottom nav) */
 @media (max-width: 768px) {
-  .mobile-safe {
-    padding-bottom: 90px; /* space for bottom sidebar */
+
+  h2 {
+    font-size: 22px !important;
+  }
+
+  p {
+    font-size: 13px !important;
+  }
+
+  table {
+    font-size: 12px !important;
+  }
+
+  button {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
   }
 }

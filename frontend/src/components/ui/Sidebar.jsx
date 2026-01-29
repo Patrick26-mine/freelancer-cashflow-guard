@@ -57,11 +57,16 @@ export default function Sidebar() {
   return (
     <aside
       className={`sidebar ${isCollapsed ? "collapsed" : ""}`}
-      onMouseEnter={() => setCollapsed(false)}
-      onMouseLeave={() => {
-        setCollapsed(true);
-        setOpenMenu(false);
-      }}
+      onMouseEnter={() => {
+  if (window.innerWidth > 768) setCollapsed(false);
+}}
+onMouseLeave={() => {
+  if (window.innerWidth > 768) {
+    setCollapsed(true);
+    setOpenMenu(false);
+  }
+}}
+
     >
       {/* ===== BRAND ===== */}
       <div className="sidebar-top">
