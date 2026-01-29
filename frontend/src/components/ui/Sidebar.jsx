@@ -146,6 +146,11 @@ export default function Sidebar() {
           collapsed={isCollapsed}
         />
       </nav>
+        <NavItem
+  to="/profile"
+  label="Profile"
+  icon={<User size={20} />}
+/>
 
       {/* ===== PROFILE DROPDOWN FOOTER ===== */}
       <div className="sidebar-footer">

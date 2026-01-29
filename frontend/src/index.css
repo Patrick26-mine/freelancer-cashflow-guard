@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "Audrey";
+  src: url("/fonts/Audrey-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
 /* ===== AUTH PAGES ===== */
 
 .auth-container {
@@ -108,4 +117,16 @@ html, body, #root {
 }
 html, body, #root {
   height: 100%;
+}
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+/* Mobile tables scroll */
+@media (max-width: 768px) {
+  table {
+    min-width: 700px;
+  }
 }

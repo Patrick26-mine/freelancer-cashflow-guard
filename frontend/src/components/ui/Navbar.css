@@ -1,25 +1,45 @@
 .navbar {
-  height: 64px;
-  padding: 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 16px 20px;
+}
+
+.navbar-brand {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+}
 
-  /* Premium pastel background (same as dashboard) */
-  background: transparent;
-
-  /* Minimal separator */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+.navbar-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
 }
 
 .navbar-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #111827;
-  letter-spacing: -0.3px;
+  font-family: "Audrey", serif;
+  font-size: 22px;
+  font-weight: 500;
 }
 
-/* Empty spacer (keeps layout balanced) */
-.navbar-spacer {
-  width: 1px;
+.profile-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #fde68a;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 18px;
+  }
 }

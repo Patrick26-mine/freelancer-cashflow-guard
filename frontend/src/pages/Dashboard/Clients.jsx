@@ -179,6 +179,7 @@ export default function Clients() {
       />
 
       {/* TABLE */}
+      <div style={{ width: "100%", overflowX: "auto" }}></div>
       <TableCard>
         <thead>
           <tr>

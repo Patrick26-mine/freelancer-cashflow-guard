@@ -264,6 +264,7 @@ export default function Invoices() {
       </form>
 
       {/* ===== TABLE (OPTION B SOLID CREAM) ===== */}
+      <div style={{ width: "100%", overflowX: "auto" }}></div>
       <table style={tableStyle}>
         <thead>
           <tr>

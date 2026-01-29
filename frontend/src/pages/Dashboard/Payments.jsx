@@ -215,6 +215,7 @@ export default function Payments() {
       </div>
 
       {/* TABLE — OPTION B */}
+      <div style={{ width: "100%", overflowX: "auto" }}></div>
       <TableCard>
         <thead>
           <tr>

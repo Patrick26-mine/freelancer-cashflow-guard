@@ -1,40 +1,35 @@
 .dashboard-shell {
   display: flex;
   min-height: 100vh;
-
-  /* ✅ Full pastel gradient background */
-  background: linear-gradient(
-    135deg,
-    #fff1f2,
-    #fefce8,
-    #ecfeff
-  );
+  width: 100%;
+  background: linear-gradient(to bottom, #fff7ed, #fefce8);
 }
 
 .dashboard-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-
-  /* ✅ Prevent white block */
-  background: transparent;
 }
 
 .dashboard-page {
-  padding: 32px;
-
-  /* ✅ THIS is the key */
-  background: transparent;
-}
-.dashboard-content {
-  flex: 1;
-  padding: 32px;
+  padding: 30px;
 }
 
-/* ✅ Mobile Fix */
+/* ✅ MOBILE FIX */
 @media (max-width: 768px) {
-  .dashboard-content {
+
+  .dashboard-shell {
+    flex-direction: column;
+  }
+
+  .dashboard-page {
     padding: 18px;
-    margin-left: 0;
+    padding-bottom: 100px; /* Space for bottom nav */
+  }
+}
+/* ✅ MOBILE SAFE SPACE (so content not hidden behind bottom nav) */
+@media (max-width: 768px) {
+  .mobile-safe {
+    padding-bottom: 90px; /* space for bottom sidebar */
   }
 }

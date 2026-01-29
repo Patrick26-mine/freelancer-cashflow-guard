@@ -142,6 +142,9 @@ export default function ReminderHistory() {
       </div>
 
       {/* TABLE */}
+      <div style={{ width: "100%", overflowX: "auto" }}>
+  <div style={{ minWidth: "900px" }}></div>
+      </div>
       <div style={table}>
         <div style={thead}>
           <span>Invoice</span>
