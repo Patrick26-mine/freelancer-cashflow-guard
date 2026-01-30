@@ -2,7 +2,6 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-
   background: linear-gradient(
     to bottom right,
     #fff7ed,
@@ -23,25 +22,28 @@
   min-height: 100vh;
 }
 
-/* ================================= */
-/* ✅ MOBILE FIXES */
-/* ================================= */
+/* =============================== */
+/* ✅ MOBILE FIX: Reserve Space */
+/* Sidebar Bottom Bar Always Visible */
+/* =============================== */
+
 @media (max-width: 768px) {
 
-  /* Reserve space for bottom navbar */
+  /* Main page should not hide behind bottom sidebar */
   .dashboard-page {
-    padding: 18px;
-    padding-bottom: 100px;
+    padding-bottom: 90px; /* space for bottom navbar */
   }
 
-  /* Prevent white gap */
+  /* Ensure full height background */
   .dashboard-shell,
   .dashboard-main {
     min-height: 100vh;
     width: 100%;
   }
+}
 
-  /* Mobile typography */
+@media (max-width: 768px) {
+
   h2 {
     font-size: 22px !important;
   }
@@ -58,4 +60,19 @@
     font-size: 12px !important;
     padding: 6px 10px !important;
   }
+}
+.dashboard-shell {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.dashboard-main {
+  flex: 1;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ✅ Prevent white gap */
+.dashboard-page {
+  padding-bottom: 90px;
 }
