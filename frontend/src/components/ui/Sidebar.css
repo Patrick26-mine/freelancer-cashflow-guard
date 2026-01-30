@@ -205,7 +205,6 @@
 /* ✅ MOBILE RESPONSIVE FIX */
 /* Sidebar becomes Bottom Navbar */
 /* ============================= */
-
 @media (max-width: 768px) {
 
   .sidebar {
@@ -214,16 +213,56 @@
     left: 0;
 
     width: 100%;
-    height: 75px;
+    height: 74px;
 
-    display: flex;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
 
-    z-index: 99999; /* always above everything */
+    margin: 0;
+    border-radius: 0;
+
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid rgba(240, 200, 170, 0.4);
+
+    z-index: 99999;
   }
 
+  .sidebar-top,
+  .sidebar-footer {
+    display: none;
+  }
+
+  /* ✅ NAV BAR HORIZONTAL + SCROLLABLE */
+  .sidebar-nav {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    padding: 0;
+
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    flex: 1;
+    justify-content: center;
+
+    padding: 8px 0;
+    margin: 0;
+  }
+
+  /* ✅ Hide text labels */
+  .nav-item span {
+    display: none;
+  }
 }
+
+
 
   /* Hide branding + profile footer */
   .sidebar-top,
