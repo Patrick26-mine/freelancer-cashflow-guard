@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
   transition: width 0.25s ease;
 
   /* ✅ Glass + Blend with Dashboard */
@@ -60,7 +60,6 @@
   letter-spacing: 0.4px;
 }
 
-/* Logo mark wrapper */
 .brand-mark {
   width: 32px;
   height: 32px;
@@ -112,7 +111,6 @@
   border-top: 1px solid rgba(240, 200, 170, 0.35);
 }
 
-/* Profile trigger */
 .profile-trigger {
   display: flex;
   align-items: center;
@@ -161,7 +159,6 @@
   color: rgba(80, 40, 20, 0.6);
 }
 
-/* Dropdown menu */
 .profile-menu {
   margin-top: 8px;
   display: flex;
@@ -201,12 +198,10 @@
   justify-content: center;
 }
 
-/* ============================= */
-/* ✅ MOBILE RESPONSIVE FIX */
-/* Sidebar becomes Bottom Navbar */
-/* ============================= */
+/* ======================================= */
+/* ✅ MOBILE FIX (YOUTUBE STYLE BOTTOM BAR) */
+/* ======================================= */
 @media (max-width: 768px) {
-
   .sidebar {
     position: fixed;
     bottom: 0;
@@ -215,56 +210,29 @@
     width: 100%;
     height: 74px;
 
+    display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
 
     margin: 0;
     border-radius: 0;
 
     background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px);
+
     border-top: 1px solid rgba(240, 200, 170, 0.4);
+    border-right: none;
 
     z-index: 99999;
   }
 
-  .sidebar-top,
-  .sidebar-footer {
+  /* Remove fade overlay */
+  .sidebar::after {
     display: none;
   }
 
-  /* ✅ NAV BAR HORIZONTAL + SCROLLABLE */
-  .sidebar-nav {
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-around;
-    padding: 0;
-
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .sidebar-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .nav-item {
-    flex: 1;
-    justify-content: center;
-
-    padding: 8px 0;
-    margin: 0;
-  }
-
-  /* ✅ Hide text labels */
-  .nav-item span {
-    display: none;
-  }
-}
-
-
-
-  /* Hide branding + profile footer */
+  /* Hide brand + profile */
   .sidebar-top,
   .sidebar-footer {
     display: none;
@@ -275,20 +243,25 @@
     flex-direction: row;
     width: 100%;
     justify-content: space-evenly;
+    align-items: center;
     padding: 0;
+    margin: 0;
   }
 
+  /* Nav item fits like YouTube */
   .nav-item {
     flex: 1;
     flex-direction: column;
-    gap: 3px;
-
-    font-size: 9px;
-    padding: 6px 0;
-
-    margin: 0;
-    border-radius: 12px;
     justify-content: center;
+    align-items: center;
+
+    gap: 3px;
+    font-size: 10px;
+
+    padding: 6px 0;
+    margin: 0;
+
+    border-radius: 12px;
   }
 
   .nav-item svg {
@@ -297,7 +270,8 @@
   }
 
   .nav-item span {
-    font-size: 9px;
     display: block;
+    font-size: 9px;
+    line-height: 1;
   }
-
+}
