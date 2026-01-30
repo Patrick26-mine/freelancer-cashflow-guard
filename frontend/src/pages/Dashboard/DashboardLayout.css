@@ -37,3 +37,32 @@
   padding: 28px;
   min-height: 100vh;
 }
+/* =============================== */
+/* RESPONSIVE SWITCH */
+/* =============================== */
+
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Mobile Mode */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  /* Space so content doesn't hide behind bottom nav */
+  .dashboard-page {
+    padding-bottom: 100px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
