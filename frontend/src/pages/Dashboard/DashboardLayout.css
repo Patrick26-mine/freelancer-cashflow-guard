@@ -22,13 +22,26 @@
   min-height: 100vh;
 }
 
-/* ✅ Mobile Fix */
+/* =============================== */
+/* ✅ MOBILE FIX: Reserve Space */
+/* Sidebar Bottom Bar Always Visible */
+/* =============================== */
+
 @media (max-width: 768px) {
+
+  /* Main page should not hide behind bottom sidebar */
   .dashboard-page {
-    padding: 16px;
-    padding-bottom: 100px; /* space for bottom nav */
+    padding-bottom: 90px; /* space for bottom navbar */
+  }
+
+  /* Ensure full height background */
+  .dashboard-shell,
+  .dashboard-main {
+    min-height: 100vh;
+    width: 100%;
   }
 }
+
 @media (max-width: 768px) {
 
   h2 {
