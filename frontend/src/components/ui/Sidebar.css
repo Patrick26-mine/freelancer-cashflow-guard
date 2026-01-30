@@ -1,3 +1,5 @@
+/* src/components/ui/Sidebar.css */
+
 .sidebar {
   height: 100vh;
   width: 220px;
@@ -60,6 +62,7 @@
   letter-spacing: 0.4px;
 }
 
+/* Logo mark wrapper */
 .brand-mark {
   width: 32px;
   height: 32px;
@@ -111,6 +114,7 @@
   border-top: 1px solid rgba(240, 200, 170, 0.35);
 }
 
+/* Profile trigger */
 .profile-trigger {
   display: flex;
   align-items: center;
@@ -159,6 +163,7 @@
   color: rgba(80, 40, 20, 0.6);
 }
 
+/* Dropdown menu */
 .profile-menu {
   margin-top: 8px;
   display: flex;
@@ -196,82 +201,4 @@
 
 .sidebar.collapsed .nav-item {
   justify-content: center;
-}
-
-/* ======================================= */
-/* ✅ MOBILE FIX (YOUTUBE STYLE BOTTOM BAR) */
-/* ======================================= */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-
-    width: 100%;
-    height: 74px;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-
-    margin: 0;
-    border-radius: 0;
-
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(14px);
-
-    border-top: 1px solid rgba(240, 200, 170, 0.4);
-    border-right: none;
-
-    z-index: 99999;
-  }
-
-  /* Remove fade overlay */
-  .sidebar::after {
-    display: none;
-  }
-
-  /* Hide brand + profile */
-  .sidebar-top,
-  .sidebar-footer {
-    display: none;
-  }
-
-  /* Horizontal nav */
-  .sidebar-nav {
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-  }
-
-  /* Nav item fits like YouTube */
-  .nav-item {
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    gap: 3px;
-    font-size: 10px;
-
-    padding: 6px 0;
-    margin: 0;
-
-    border-radius: 12px;
-  }
-
-  .nav-item svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .nav-item span {
-    display: block;
-    font-size: 9px;
-    line-height: 1;
-  }
 }

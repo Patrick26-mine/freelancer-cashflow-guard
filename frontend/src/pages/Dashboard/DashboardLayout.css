@@ -1,8 +1,15 @@
+/* src/pages/Dashboard/DashboardLayout.css */
+
+/* =============================== */
+/* DASHBOARD SHELL (DESKTOP BASE) */
+/* =============================== */
+
 .dashboard-shell {
   display: flex;
   min-height: 100vh;
   width: 100%;
 
+  /* ✅ Keep your premium background gradient */
   background: linear-gradient(
     to bottom right,
     #fff7ed,
@@ -11,51 +18,22 @@
   );
 }
 
+/* =============================== */
+/* MAIN AREA */
+/* =============================== */
+
 .dashboard-main {
   flex: 1;
   width: 100%;
   min-height: 100vh;
 }
 
+/* =============================== */
+/* PAGE CONTENT */
+/* =============================== */
+
 .dashboard-page {
-  padding: 28px;
   width: 100%;
+  padding: 28px;
   min-height: 100vh;
-}
-
-/* ================================= */
-/* ✅ MOBILE FIXES */
-/* ================================= */
-@media (max-width: 768px) {
-
-  /* Reserve space for bottom navbar */
-  .dashboard-page {
-    padding: 18px;
-    padding-bottom: 100px;
-  }
-
-  /* Prevent white gap */
-  .dashboard-shell,
-  .dashboard-main {
-    min-height: 100vh;
-    width: 100%;
-  }
-
-  /* Mobile typography */
-  h2 {
-    font-size: 22px !important;
-  }
-
-  p {
-    font-size: 13px !important;
-  }
-
-  table {
-    font-size: 12px !important;
-  }
-
-  button {
-    font-size: 12px !important;
-    padding: 6px 10px !important;
-  }
 }
