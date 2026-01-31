@@ -16,10 +16,28 @@
   margin: 14px;
 
   transition: width 0.25s ease;
+
+  /* ✅ FIX: Prevent overflow leakage */
+  overflow-x: hidden;
 }
 
 .sidebar.collapsed {
   width: 68px;
+}
+
+/* ✅ FIX: Collapsed desktop = icons only */
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.sidebar.collapsed .nav-label {
+  display: none;
+}
+
+/* Prevent label text from wrapping */
+.nav-item {
+  white-space: nowrap;
 }
 
 /* ===== BRAND ===== */
@@ -123,7 +141,7 @@
   }
 
   /* ✅ Hide labels fully */
-  .nav-item span {
+  .nav-label {
     display: none;
   }
 

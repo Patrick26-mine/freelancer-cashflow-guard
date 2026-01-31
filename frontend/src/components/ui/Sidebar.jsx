@@ -190,12 +190,12 @@ function NavItem({ to, icon, active, mobile, label }) {
     <Link
       to={to}
       className={`nav-item ${active ? "active" : ""}`}
-      title={label} // ✅ Tooltip for icons on mobile
+      title={label}
     >
       {icon}
 
-      {/* Desktop label only */}
-      {!mobile && <span>{label}</span>}
+      {/* ✅ Label wrapper added */}
+      {!mobile && <span className="nav-label">{label}</span>}
     </Link>
   );
 }
