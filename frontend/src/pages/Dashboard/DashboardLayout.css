@@ -1,21 +1,43 @@
-/* src/pages/Dashboard/DashboardLayout.css */
-
 /* =============================== */
-/* DASHBOARD SHELL (DESKTOP BASE) */
+/* PREMIUM DASHBOARD BACKGROUND */
 /* =============================== */
 
 .dashboard-shell {
   display: flex;
   min-height: 100vh;
   width: 100%;
+  position: relative;
 
-  /* ✅ Keep your premium background gradient */
+  /* ✅ Signature Premium Gradient Atmosphere */
   background: linear-gradient(
     to bottom right,
     #fff7ed,
     #fefce8,
     #ecfeff
   );
+
+  overflow-x: hidden;
+}
+
+/* ✅ Soft Aura Overlay (makes it elegant like Stripe/Notion) */
+.dashboard-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: radial-gradient(
+      circle at top left,
+      rgba(251, 191, 36, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(99, 102, 241, 0.14),
+      transparent 60%
+    );
+
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* =============================== */
@@ -26,43 +48,49 @@
   flex: 1;
   width: 100%;
   min-height: 100vh;
+
+  position: relative;
+  z-index: 1; /* ✅ content stays above aura */
 }
 
 /* =============================== */
-/* PAGE CONTENT */
+/* PAGE CONTENT WRAPPER */
 /* =============================== */
 
 .dashboard-page {
   width: 100%;
-  padding: 28px;
   min-height: 100vh;
+  padding: 28px;
+
+  /* ✅ Prevent sideways overflow */
+  overflow-x: hidden;
 }
+
 /* =============================== */
-/* RESPONSIVE SWITCH */
+/* MOBILE MODE */
 /* =============================== */
 
-.desktop-only {
-  display: block;
-}
-
-.mobile-only {
-  display: none;
-}
-
-/* Mobile Mode */
 @media (max-width: 768px) {
-  .desktop-only {
-    display: none;
+  .dashboard-shell {
+    flex-direction: column;
   }
 
-  .mobile-only {
-    display: block;
-  }
-
-  /* Space so content doesn't hide behind bottom nav */
   .dashboard-page {
-    padding-bottom: 100px;
     padding-left: 16px;
     padding-right: 16px;
+
+    /* ✅ Space for bottom navbar */
+    padding-bottom: 120px;
+
+    /* ✅ Slight zoom-out premium density */
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 28px !important;
+  }
+
+  h2 {
+    font-size: 22px !important;
   }
 }

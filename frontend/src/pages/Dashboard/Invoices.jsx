@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuthStore } from "../../store/authStore";
 import { useThemeStore } from "../../store/themeStore";
-import { useLocation } from "react-router-dom";
+
+import { FileText } from "lucide-react";
 
 import { getDashboardReminderSuggestions } from "../../reminders/reminderEngine";
 import ReminderDetailPanel from "../../components/dashboard/ReminderDetailPanel";
@@ -26,22 +27,13 @@ function getInvoiceRisk(dueDate, balance) {
 export default function Invoices() {
   const user = useAuthStore((s) => s.user);
   const colors = useThemeStore((s) => s.colors);
-  const location = useLocation();
-
-  const highlightInvoiceIds = location.state?.highlightInvoiceIds || [];
 
   const [invoices, setInvoices] = useState([]);
   const [clients, setClients] = useState([]);
 
-  const [expandedInvoice, setExpandedInvoice] = useState(null);
-  const [timeline, setTimeline] = useState({ reminders: [], payments: [] });
-
   const [reminderHistory, setReminderHistory] = useState([]);
   const [activeReminder, setActiveReminder] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
-
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({});
 
   const [form, setForm] = useState({
     client_id: "",
@@ -50,7 +42,8 @@ export default function Invoices() {
     amount: "",
   });
 
-  /* ===== FETCH ===== */
+  /* ================= FETCH ================= */
+
   async function fetchInvoices() {
     const { data } = await supabase
       .from("invoice")
@@ -61,7 +54,7 @@ export default function Invoices() {
          due_date,
          amount,
          balance,
-         clients ( client_name, email )`
+         clients ( client_name )`
       )
       .order("issue_date", { ascending: false });
 
@@ -85,25 +78,6 @@ export default function Invoices() {
     setReminderHistory(data || []);
   }
 
-  async function fetchTimeline(invoiceId) {
-    const { data: reminders } = await supabase
-      .from("invoice_reminders")
-      .select("tone, sent_at")
-      .eq("invoice_id", invoiceId)
-      .order("sent_at", { ascending: true });
-
-    const { data: payments } = await supabase
-      .from("payment")
-      .select("amount_paid, payment_date")
-      .eq("invoice_id", invoiceId)
-      .order("payment_date", { ascending: true });
-
-    setTimeline({
-      reminders: reminders || [],
-      payments: payments || [],
-    });
-  }
-
   useEffect(() => {
     if (!user) return;
     fetchInvoices();
@@ -111,7 +85,8 @@ export default function Invoices() {
     fetchReminderHistory();
   }, [user]);
 
-  /* ===== ADD INVOICE ===== */
+  /* ================= ADD INVOICE ================= */
+
   async function handleAdd(e) {
     e.preventDefault();
 
@@ -139,47 +114,7 @@ export default function Invoices() {
     fetchInvoices();
   }
 
-  function startEdit(inv) {
-    setEditingId(inv.invoice_id);
-    setEditForm({
-      issue_date: inv.issue_date,
-      due_date: inv.due_date,
-      amount: inv.amount,
-    });
-  }
-
-  async function saveEdit(id) {
-    const { error } = await supabase
-      .from("invoice")
-      .update({
-        issue_date: editForm.issue_date,
-        due_date: editForm.due_date,
-        amount: Number(editForm.amount),
-        balance: Number(editForm.amount),
-      })
-      .eq("invoice_id", id);
-
-    if (error) return alert(error.message);
-
-    setEditingId(null);
-    setEditForm({});
-    fetchInvoices();
-  }
-
-  async function deleteInvoice(id) {
-    if (!confirm("Delete this invoice?")) return;
-    await supabase.from("invoice").delete().eq("invoice_id", id);
-    fetchInvoices();
-  }
-
-  function toggleTimeline(invId) {
-    if (expandedInvoice === invId) {
-      setExpandedInvoice(null);
-      return;
-    }
-    setExpandedInvoice(invId);
-    fetchTimeline(invId);
-  }
+  /* ================= REMINDER PANEL ================= */
 
   function openReminderPanel(inv) {
     const suggestion = getDashboardReminderSuggestions(
@@ -187,33 +122,24 @@ export default function Invoices() {
       reminderHistory
     )[0];
 
-    if (!suggestion) {
-      alert("No reminder available.");
-      return;
-    }
-
-    if (!suggestion.decision.allowed) {
-      alert(
-        `Cooldown active. You can send the next reminder in ${suggestion.decision.cooldownDays} days.`
-      );
-      return;
-    }
+    if (!suggestion) return alert("No reminder available.");
 
     setActiveReminder(suggestion);
     setPanelOpen(true);
   }
 
-  return (
-    <div
-      style={{
-        fontFamily: "Inter, system-ui",
-        background: "transparent", // ✅ FIX: remove white layer
-      }}
-    >
-      <h2 style={titleStyle}>Invoices</h2>
+  /* ================= UI ================= */
 
-      {/* ===== ENTRY FORM (OPTION B SOLID CREAM) ===== */}
-      <form onSubmit={handleAdd} style={formStyle}>
+  return (
+    <div className="page-surface">
+      {/* TITLE */}
+      <h2 style={titleStyle}>
+        <FileText size={26} />
+        Invoices
+      </h2>
+
+      {/* ✅ ENTRY FORM (Premium Mobile Bar) */}
+      <form onSubmit={handleAdd} className="mobile-form-bar">
         <select
           value={form.client_id}
           onChange={(e) =>
@@ -263,83 +189,74 @@ export default function Invoices() {
         <button style={primaryBtn(colors)}>Add</button>
       </form>
 
-      {/* ===== TABLE (OPTION B SOLID CREAM) ===== */}
-      <div style={{ width: "100%", overflowX: "auto" }}></div>
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            {["Invoice", "Client", "Due", "Amount", "Balance", "Status", "Actions"].map(
-              (h) => (
+      {/* ✅ TABLE SCROLL PREMIUM */}
+      <div className="table-wrap">
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              {[
+                "Invoice",
+                "Client",
+                "Due",
+                "Amount",
+                "Balance",
+                "Status",
+                "Action",
+              ].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
-              )
-            )}
-          </tr>
-        </thead>
+              ))}
+            </tr>
+          </thead>
 
-        <tbody>
-          {invoices.map((inv) => {
-            const risk = getInvoiceRisk(inv.due_date, inv.balance);
-            const isHighlighted = highlightInvoiceIds.includes(inv.invoice_id);
-
-            const suggestion = getDashboardReminderSuggestions(
-              [inv],
-              reminderHistory
-            )[0];
-
-            const cooldownActive = suggestion && !suggestion.decision.allowed;
-
-            return (
-              <tr
-                key={inv.invoice_id}
-                style={isHighlighted ? highlightRow : undefined}
-              >
-                <td style={tdStyle}>{inv.invoice_number}</td>
-                <td style={tdStyle}>{inv.clients?.client_name}</td>
-                <td style={tdStyle}>{inv.due_date}</td>
-                <td style={tdStyle}>₹{inv.amount}</td>
-                <td style={tdStyle}>₹{inv.balance}</td>
-                <td style={tdStyle}>
-                  <span style={{ ...statusBadge, background: risk.color }}>
-                    {risk.label}
-                  </span>
-                </td>
-                <td style={tdStyle}>
-                  <button style={secondaryBtn} onClick={() => startEdit(inv)}>
-                    Edit
-                  </button>{" "}
-                  <button
-                    style={secondaryBtn}
-                    onClick={() => deleteInvoice(inv.invoice_id)}
-                  >
-                    Delete
-                  </button>{" "}
-                  <button
-                    style={secondaryBtn}
-                    onClick={() => toggleTimeline(inv.invoice_id)}
-                  >
-                    View Timeline
-                  </button>{" "}
-                  {cooldownActive ? (
-                    <span style={cooldownText}>
-                      Cooldown {suggestion.decision.cooldownDays}d
-                    </span>
-                  ) : (
-                    <button
-                      style={secondaryBtn}
-                      onClick={() => openReminderPanel(inv)}
-                    >
-                      Send Reminder
-                    </button>
-                  )}
+          <tbody>
+            {invoices.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={emptyStyle}>
+                  No invoices yet
                 </td>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ) : (
+              invoices.map((inv) => {
+                const risk = getInvoiceRisk(inv.due_date, inv.balance);
 
+                return (
+                  <tr key={inv.invoice_id}>
+                    <td style={tdStyle}>{inv.invoice_number}</td>
+                    <td style={tdStyle}>{inv.clients?.client_name}</td>
+                    <td style={tdStyle}>{inv.due_date}</td>
+                    <td style={tdStyle}>₹{inv.amount}</td>
+                    <td style={tdStyle}>₹{inv.balance}</td>
+
+                    <td style={tdStyle}>
+                      <span
+                        style={{
+                          ...statusBadge,
+                          background: risk.color,
+                        }}
+                      >
+                        {risk.label}
+                      </span>
+                    </td>
+
+                    <td style={tdStyle}>
+                      <button
+                        style={secondaryBtn}
+                        onClick={() => openReminderPanel(inv)}
+                      >
+                        Reminder
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* REMINDER MODAL */}
       <ReminderDetailPanel
         open={panelOpen}
         reminder={activeReminder}
@@ -349,65 +266,62 @@ export default function Invoices() {
   );
 }
 
-/* ===== OPTION B STYLES ===== */
+/* ================= STYLES ================= */
 
-const titleStyle = { fontSize: 26, fontWeight: 700, marginBottom: 16 };
-
-const formStyle = {
-  display: "grid",
-  gridTemplateColumns: "1.5fr 1fr 1fr 1fr auto",
-  gap: 16,
-  marginBottom: 24,
-
-  background: "#fffaf3", // ✅ Cream
-  padding: 20,
-  borderRadius: 12,
-  border: "1px solid #e5e7eb",
+const titleStyle = {
+  fontSize: 26,
+  fontWeight: 700,
+  marginBottom: 18,
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
 };
 
 const inputStyle = {
-  height: 38,
-  borderRadius: 8,
-  border: "1px solid #cbd5f5",
+  height: 40,
+  borderRadius: 12,
+  border: "1px solid rgba(203,213,245,0.8)",
   padding: "0 12px",
+  fontSize: 14,
+  background: "rgba(255,255,255,0.65)",
 };
 
 const primaryBtn = (colors) => ({
   background: colors.primary,
   color: "#fff",
   border: "none",
-  borderRadius: 10,
-  padding: "0 18px",
-  fontWeight: 600,
+  borderRadius: 12,
+  padding: "10px 18px",
+  fontWeight: 700,
+  cursor: "pointer",
 });
 
 const secondaryBtn = {
-  background: "#eef2ff",
-  border: "1px solid #6366f1",
+  background: "rgba(238,242,255,0.7)",
+  border: "1px solid rgba(99,102,241,0.5)",
   color: "#4338ca",
-  borderRadius: 8,
-  padding: "6px 12px",
+  borderRadius: 12,
+  padding: "8px 14px",
+  fontWeight: 600,
   cursor: "pointer",
 };
 
 const tableStyle = {
   width: "100%",
   borderCollapse: "collapse",
-  background: "#fffaf3", // ✅ Cream table
-  border: "1px solid #e5e7eb",
-  borderRadius: 12,
-  overflow: "hidden",
+  minWidth: "750px",
 };
 
 const thStyle = {
   padding: 14,
-  background: "#fef3c7", // ✅ Soft pastel header
   fontWeight: 700,
+  textAlign: "left",
 };
 
 const tdStyle = {
   padding: 14,
-  borderBottom: "1px solid #e5e7eb",
+  borderTop: "1px solid rgba(229,231,235,0.6)",
+  whiteSpace: "nowrap",
 };
 
 const statusBadge = {
@@ -415,8 +329,10 @@ const statusBadge = {
   borderRadius: 999,
   color: "#fff",
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: 700,
 };
 
-const highlightRow = { background: "#fff7ed" };
-const cooldownText = { fontSize: 13, fontWeight: 600, color: "#64748b" };
+const emptyStyle = {
+  padding: 20,
+  color: "#64748b",
+};

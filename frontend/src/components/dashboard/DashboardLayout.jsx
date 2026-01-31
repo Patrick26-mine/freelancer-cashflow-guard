@@ -6,25 +6,22 @@ import { useState } from "react";
 import "../../pages/Dashboard/DashboardLayout.css";
 
 export default function DashboardLayout() {
-  // ✅ Mobile Sidebar Toggle State
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="dashboard-shell">
-      {/* ✅ Sidebar gets mobile toggle props */}
       <Sidebar
         mobileOpen={mobileOpen}
         closeMobile={() => setMobileOpen(false)}
       />
 
       <div className="dashboard-main">
-        {/* ✅ Navbar gets hamburger toggle */}
         <Navbar onMenuClick={() => setMobileOpen(true)} />
 
-       <div className="dashboard-page mobile-safe">
-  <Outlet />
-</div>
-
+        {/* ✅ Page wrapper always full height */}
+        <div className="dashboard-page">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

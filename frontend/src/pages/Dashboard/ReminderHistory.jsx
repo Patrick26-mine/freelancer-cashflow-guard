@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
+import { Bell } from "lucide-react";
+
 /* ======================================================
-   REMINDER HISTORY — FILTERABLE + MESSAGE VIEW
+   REMINDER HISTORY — PREMIUM RESPONSIVE VERSION
 ====================================================== */
 
 export default function ReminderHistory() {
@@ -35,6 +37,7 @@ export default function ReminderHistory() {
         tone,
         message,
         sent_at,
+        sent_via,
         invoice:invoice_id (
           invoice_number,
           balance,
@@ -64,7 +67,7 @@ export default function ReminderHistory() {
     return Array.from(set);
   }, [reminders]);
 
-  /* APPLY FILTERS (BUTTON-BASED) */
+  /* APPLY FILTERS */
   function applyFilters() {
     let result = [...reminders];
 
@@ -79,27 +82,30 @@ export default function ReminderHistory() {
     }
 
     if (fromDate) {
-      result = result.filter(
-        (r) => r.sent_at.split("T")[0] >= fromDate
-      );
+      result = result.filter((r) => r.sent_at.split("T")[0] >= fromDate);
     }
 
     if (toDate) {
-      result = result.filter(
-        (r) => r.sent_at.split("T")[0] <= toDate
-      );
+      result = result.filter((r) => r.sent_at.split("T")[0] <= toDate);
     }
 
     setFiltered(result);
   }
 
   return (
-    <div style={{ fontFamily: "Inter, system-ui" }}>
-      <h2 style={title}>Reminder History</h2>
-      <p style={subtitle}>A complete log of all reminders you’ve sent.</p>
+    <div className="page-surface">
+      {/* TITLE */}
+      <h2 style={titleStyle}>
+        <Bell size={26} />
+        Reminder History
+      </h2>
 
-      {/* FILTER BAR */}
-      <div style={filterBar}>
+      <p style={subtitle}>
+        A complete log of all reminders you’ve sent.
+      </p>
+
+      {/* ✅ FILTER BAR (Premium Mobile Layout) */}
+      <div className="mobile-form-bar">
         <select
           value={clientFilter}
           onChange={(e) => setClientFilter(e.target.value)}
@@ -141,46 +147,78 @@ export default function ReminderHistory() {
         </button>
       </div>
 
-      {/* TABLE */}
-      <div style={{ width: "100%", overflowX: "auto" }}>
-  <div style={{ minWidth: "900px" }}></div>
-      </div>
-      <div style={table}>
-        <div style={thead}>
-          <span>Invoice</span>
-          <span>Client</span>
-          <span>Amount</span>
-          <span>Tone</span>
-          <span>Sent On</span>
-          <span>Actions</span>
-        </div>
+      {/* ✅ TABLE SCROLL WRAPPER */}
+      <div className="table-wrap">
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              {[
+                "Invoice #",
+                "Client",
+                "Amount",
+                "Tone",
+                "Via",
+                "Sent On",
+                "Actions",
+              ].map((h) => (
+                <th key={h} style={thStyle}>
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
 
-        {filtered.map((r) => (
-          <div key={r.id} style={row}>
-            <span>{r.invoice?.invoice_number}</span>
-            <span>{r.invoice?.clients?.client_name}</span>
-            <span>₹{r.invoice?.balance}</span>
-            <span>
-              <span style={pill}>{r.tone}</span>
-            </span>
-            <span>{new Date(r.sent_at).toLocaleDateString()}</span>
-            <span style={{ display: "flex", gap: 12 }}>
-              <button onClick={() => setOpenMessage(r)} style={linkBtn}>
-                View message
-              </button>
-              <button
-                onClick={() =>
-                  navigate("/invoices", {
-                    state: { highlightInvoiceId: r.invoice_id },
-                  })
-                }
-                style={linkBtn}
-              >
-                View invoice
-              </button>
-            </span>
-          </div>
-        ))}
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="7" style={emptyStyle}>
+                  No reminders sent yet.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((r) => (
+                <tr key={r.id}>
+                  <td style={monoCell}>{r.invoice?.invoice_number}</td>
+                  <td style={tdStyle}>{r.invoice?.clients?.client_name}</td>
+                  <td style={tdStyle}>₹{r.invoice?.balance}</td>
+
+                  <td style={tdStyle}>
+                    <span style={pill}>{r.tone}</span>
+                  </td>
+
+                  <td style={tdStyle}>
+                    <span style={viaPill}>
+                      {r.sent_via ? r.sent_via : "Manual"}
+                    </span>
+                  </td>
+
+                  <td style={tdStyle}>
+                    {new Date(r.sent_at).toLocaleDateString()}
+                  </td>
+
+                  <td style={tdStyle}>
+                    <button
+                      onClick={() => setOpenMessage(r)}
+                      style={linkBtn}
+                    >
+                      View
+                    </button>{" "}
+                    <button
+                      onClick={() =>
+                        navigate("/invoices", {
+                          state: { highlightInvoiceIds: [r.invoice_id] },
+                        })
+                      }
+                      style={linkBtn}
+                    >
+                      Invoice
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* MESSAGE MODAL */}
@@ -188,15 +226,13 @@ export default function ReminderHistory() {
         <div style={overlay}>
           <div style={modal}>
             <h3>{openMessage.invoice?.invoice_number}</h3>
+
             <p style={{ fontSize: 13, color: "#64748b" }}>
-              {openMessage.invoice?.clients?.client_name} • {openMessage.tone}
+              {openMessage.invoice?.clients?.client_name} •{" "}
+              {openMessage.tone}
             </p>
 
-            <textarea
-              readOnly
-              value={openMessage.message}
-              style={textarea}
-            />
+            <textarea readOnly value={openMessage.message} style={textarea} />
 
             <button onClick={() => setOpenMessage(null)} style={closeBtn}>
               Close
@@ -208,65 +244,74 @@ export default function ReminderHistory() {
   );
 }
 
-/* ================= STYLES ================= */
+/* ================= PREMIUM STYLES ================= */
 
-const title = { fontSize: 24, fontWeight: 700 };
-const subtitle = { color: "#64748b", marginBottom: 16 };
-
-const filterBar = {
+const titleStyle = {
+  fontSize: 26,
+  fontWeight: 700,
+  marginBottom: 10,
   display: "flex",
-  gap: 12,
   alignItems: "center",
-  padding: 16,
-  background: "#f1f5ff",
-  borderRadius: 14,
-  marginBottom: 16,
+  gap: 10,
 };
 
+const subtitle = { color: "#64748b", marginBottom: 18 };
+
 const filterInput = {
-  padding: "8px 12px",
-  borderRadius: 10,
-  border: "1px solid #c7d2fe",
+  height: 40,
+  borderRadius: 12,
+  border: "1px solid rgba(203,213,245,0.8)",
+  padding: "0 12px",
+  fontSize: 14,
+  background: "rgba(255,255,255,0.65)",
 };
 
 const applyBtn = {
-  padding: "8px 16px",
-  borderRadius: 10,
   background: "#6366f1",
   color: "#fff",
   border: "none",
+  borderRadius: 12,
+  padding: "10px 18px",
+  fontWeight: 700,
   cursor: "pointer",
 };
 
-const table = {
-  border: "1px solid #e5e7eb",
-  borderRadius: 14,
-  overflow: "hidden",
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  minWidth: "850px",
 };
 
-const thead = {
-  display: "grid",
-  gridTemplateColumns: "1.2fr 1fr 1fr 1fr 1fr 1.5fr",
+const thStyle = {
   padding: 14,
   fontWeight: 700,
-  background: "#f8fafc",
+  textAlign: "left",
 };
 
-const row = {
-  display: "grid",
-  gridTemplateColumns: "1.2fr 1fr 1fr 1fr 1fr 1.5fr",
+const tdStyle = {
   padding: 14,
-  borderTop: "1px solid #e5e7eb",
-  alignItems: "center",
+  borderTop: "1px solid rgba(229,231,235,0.6)",
+  whiteSpace: "nowrap",
 };
+
+const monoCell = { ...tdStyle, fontFamily: "monospace" };
 
 const pill = {
   background: "#fee2e2",
   color: "#991b1b",
-  padding: "4px 10px",
+  padding: "5px 10px",
   borderRadius: 999,
   fontSize: 12,
-  fontWeight: 600,
+  fontWeight: 700,
+};
+
+const viaPill = {
+  background: "#e0f2fe",
+  color: "#0369a1",
+  padding: "5px 10px",
+  borderRadius: 999,
+  fontSize: 12,
+  fontWeight: 700,
 };
 
 const linkBtn = {
@@ -275,6 +320,13 @@ const linkBtn = {
   color: "#6366f1",
   cursor: "pointer",
   fontSize: 13,
+  fontWeight: 600,
+};
+
+const emptyStyle = {
+  padding: 20,
+  color: "#64748b",
+  textAlign: "center",
 };
 
 const overlay = {

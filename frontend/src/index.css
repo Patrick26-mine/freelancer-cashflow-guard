@@ -5,9 +5,28 @@
   font-style: normal;
 }
 
+/* =============================== */
+/* GLOBAL RESET (CRITICAL FIX) */
+/* =============================== */
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* ✅ Fix right-side gap issue */
+}
 
-/* ===== AUTH PAGES ===== */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* ✅ Prevent mobile sideways overflow */
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* =============================== */
+/* AUTH PAGES */
+/* =============================== */
 
 .auth-container {
   min-height: 100vh;
@@ -23,7 +42,7 @@
   background: white;
   padding: 32px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .auth-card h1 {
@@ -67,66 +86,118 @@
   text-decoration: none;
   font-weight: 500;
 }
+
+/* =============================== */
+/* TAILWIND BASE */
+/* =============================== */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ===== SaaS UI helpers ===== */
+/* =============================== */
+/* PREMIUM PAGE SURFACE SYSTEM */
+/* =============================== */
 
-.input {
-  @apply w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500;
-}
+.page-surface {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px;
 
-.th {
-  @apply px-4 py-3 text-left font-medium text-gray-600;
-}
+  border-radius: 24px;
 
-.td {
-  @apply px-4 py-3;
-}
+  /* Stronger premium glass */
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
 
-.pill {
-  @apply px-3 py-1 rounded-full text-xs font-semibold;
-}
+  border: 1px solid rgba(255, 200, 150, 0.35);
 
-.pill.green {
-  @apply bg-green-100 text-green-700;
-}
-
-.pill.red {
-  @apply bg-red-100 text-red-700;
+  /* Premium elevation */
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.06);
 }
 
-.pill.yellow {
-  @apply bg-yellow-100 text-yellow-700;
+/* Mobile spacing fix */
+@media (max-width: 768px) {
+  .page-surface {
+    padding: 18px;
+    margin: 0 16px; /* ✅ Perfect equal gap left+right */
+  }
 }
 
-.btn-edit {
-  @apply px-3 py-1 rounded-md bg-indigo-100 text-indigo-700;
+/* =============================== */
+/* MOBILE FORM BAR SYSTEM */
+/* =============================== */
+
+.mobile-form-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  padding: 16px;
+  border-radius: 18px;
+
+  background: rgba(241, 245, 255, 0.85);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(199, 210, 254, 0.65);
+
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.btn-delete {
-  @apply px-3 py-1 rounded-md bg-red-100 text-red-700;
+.mobile-form-bar input,
+.mobile-form-bar select {
+  flex: 1;
+  min-width: 160px;
 }
 
-.empty {
-  @apply text-center py-8 text-gray-400;
+/* Button stays premium */
+.mobile-form-bar button {
+  flex: none;
+  min-width: 110px;
 }
-html, body, #root {
-  height: 100%;
+
+/* Mobile stack */
+@media (max-width: 520px) {
+  .mobile-form-bar input,
+  .mobile-form-bar select {
+    min-width: 100%;
+  }
+
+  .mobile-form-bar button {
+    width: 100%;
+  }
 }
-html, body, #root {
-  height: 100%;
-}
+
+/* =============================== */
+/* PREMIUM TABLE SCROLL */
+/* =============================== */
+
 .table-wrap {
   width: 100%;
   overflow-x: auto;
-  border-radius: 12px;
+
+  border-radius: 18px;
+  margin-top: 18px;
+
+  border: 1px solid rgba(229, 231, 235, 0.7);
+  background: rgba(255, 250, 243, 0.82);
 }
 
-/* Mobile tables scroll */
+/* Visible scrollbar */
+.table-wrap::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrap::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.25);
+  border-radius: 999px;
+}
+
+/* Mobile tables always scroll */
 @media (max-width: 768px) {
   table {
-    min-width: 700px;
+    min-width: 650px;
   }
 }
