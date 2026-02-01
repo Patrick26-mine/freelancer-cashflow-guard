@@ -17,35 +17,42 @@ export const useAuthStore = create((set) => ({
   },
 
   /* ========================
-     SIGN UP
+     SIGN UP (Correct)
   ======================== */
   signup: async (email, password) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        // ✅ Redirect user back after confirmation
+        emailRedirectTo:
+          "https://freelancer-cashflow-guard.vercel.app/login",
+      },
     });
 
     if (error) throw error;
 
-    // ✅ Auto Create Profile Row
-    await supabase.from("user_profiles").insert({
-      user_id: data.user.id,
-      username: email.split("@")[0],
-      avatar_url: null,
-    });
+    // ✅ Auto Create Profile Row (Only on Signup)
+    if (data?.user) {
+      await supabase.from("user_profiles").insert({
+        user_id: data.user.id,
+        username: email.split("@")[0],
+        avatar_url: null,
+      });
+    }
 
     return data;
   },
 
   /* ========================
-     LOGIN (FIXED)
+     LOGIN (FIXED ✅)
   ======================== */
   login: async (email, password) => {
-    // ✅ Correct login method
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
     if (error) throw error;
 
@@ -54,10 +61,10 @@ export const useAuthStore = create((set) => ({
   },
 
   /* ========================
-     LOGOUT (FIXED FOR iOS)
+     LOGOUT
   ======================== */
   logout: async () => {
-    await supabase.auth.signOut({ scope: "global" });
+    await supabase.auth.signOut();
     set({ user: null });
   },
 }));

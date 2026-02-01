@@ -3,7 +3,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { SEND_CHANNELS, sendReminder } from "../../reminders/sendChannels";
 
 /* ======================================================
-   REMINDER DETAIL PANEL — STABLE & TRUSTWORTHY
+   REMINDER DETAIL PANEL — UI SAME + CLEAN ALERTS
 ====================================================== */
 
 export default function ReminderDetailPanel({ open, reminder, onClose }) {
@@ -14,9 +14,12 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
   /* ===== MODE STATE ===== */
   const [mode, setMode] = useState(SEND_CHANNELS.MANUAL);
 
-  /* ===== LOCAL SENT TIMER (SOURCE OF TRUTH) ===== */
+  /* ===== LOCAL SENT TIMER ===== */
   const [lastSentAtLocal, setLastSentAtLocal] = useState(null);
   const [now, setNow] = useState(Date.now());
+
+  /* ===== PREMIUM STATUS ALERT ===== */
+  const [statusMsg, setStatusMsg] = useState("");
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 60_000);
@@ -26,7 +29,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
   const effectiveLastSentAt =
     lastSentAtLocal || reminder.decision?.lastSentAt;
 
-  /* ===== COOLDOWN (RECOMPUTED LOCALLY) ===== */
+  /* ===== COOLDOWN ===== */
   const COOLDOWN_DAYS = 5;
   let isCooldown = false;
   let cooldownDaysLeft = 0;
@@ -61,49 +64,61 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
     });
 
     if (!error) {
-      // ✅ CRITICAL FIX
       setLastSentAtLocal(sentAt);
     }
   }
 
   async function handleManualSend() {
     if (isCooldown) return;
+
     await markAsSent(SEND_CHANNELS.MANUAL);
+
+    setStatusMsg("✅ Marked as sent manually.");
+    setTimeout(() => setStatusMsg(""), 2500);
   }
 
   async function handleEmailSend() {
     if (!hasEmail || isCooldown) return;
 
-    const { error } = await supabase.functions.invoke(
-      "send-reminder-email",
-      {
-        body: {
-          to: reminder.client_email,
-          subject: `Payment reminder — Invoice ${reminder.invoice_number}`,
-          message: reminder.message,
-        },
+    setStatusMsg("Sending email...");
+
+    try {
+      const { error } = await supabase.functions.invoke(
+        "send-reminder-email",
+        {
+          body: {
+            to: reminder.client_email,
+            subject: `Payment reminder — Invoice ${reminder.invoice_number}`,
+            message: reminder.message,
+          },
+        }
+      );
+
+      if (error) {
+        setStatusMsg("❌ Email could not be sent.");
+        setTimeout(() => setStatusMsg(""), 3000);
+        return;
       }
-    );
 
-    if (error) {
-      alert(error.message || "Failed to send email");
-      return;
+      await markAsSent(SEND_CHANNELS.EMAIL);
+
+      setStatusMsg("✅ Email sent successfully.");
+      setTimeout(() => setStatusMsg(""), 3000);
+    } catch {
+      setStatusMsg("⚠ Email service unavailable.");
+      setTimeout(() => setStatusMsg(""), 3000);
     }
-
-    await markAsSent(SEND_CHANNELS.EMAIL);
-    alert("Email sent successfully.");
   }
 
   function copyMessage() {
     navigator.clipboard.writeText(reminder.message);
+    setStatusMsg("📋 Message copied.");
+    setTimeout(() => setStatusMsg(""), 2000);
   }
 
   function openEmailThread() {
     const q = encodeURIComponent(reminder.invoice_number);
-    window.open(
-      `https://mail.google.com/mail/u/0/#search/${q}`,
-      "_blank"
-    );
+    window.open(`https://mail.google.com/mail/u/0/#search/${q}`, "_blank");
   }
 
   /* ================= UI ================= */
@@ -122,8 +137,13 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
               </span>
             </div>
           </div>
-          <button onClick={onClose} style={closeBtn}>×</button>
+          <button onClick={onClose} style={closeBtn}>
+            ×
+          </button>
         </div>
+
+        {/* ✅ STATUS MESSAGE */}
+        {statusMsg && <div style={statusBox}>{statusMsg}</div>}
 
         {/* META */}
         <div style={metaGrid}>
@@ -148,7 +168,11 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
 
           <div style={sendViaOptions}>
             <span
-              style={mode === SEND_CHANNELS.MANUAL ? sendViaActive : sendViaOption}
+              style={
+                mode === SEND_CHANNELS.MANUAL
+                  ? sendViaActive
+                  : sendViaOption
+              }
               onClick={() => setMode(SEND_CHANNELS.MANUAL)}
             >
               Manual
@@ -162,9 +186,11 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
                     : sendViaOption
                   : sendViaDisabled
               }
-              onClick={hasEmail ? () => setMode(SEND_CHANNELS.EMAIL) : undefined}
+              onClick={
+                hasEmail ? () => setMode(SEND_CHANNELS.EMAIL) : undefined
+              }
             >
-              {hasEmail ? "Email" : "Email (no address)"}
+              Email
             </span>
 
             <span style={sendViaDisabled}>WhatsApp (soon)</span>
@@ -188,7 +214,8 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
         <div style={cooldownBox}>
           {isCooldown ? (
             <>
-              <strong>Cooldown active</strong><br />
+              <strong>Cooldown active</strong>
+              <br />
               You can send the next reminder in{" "}
               <strong>{cooldownDaysLeft} days</strong>.
             </>
@@ -241,17 +268,14 @@ function formatRelativeTime(date, nowMs) {
   const diff = Math.floor((nowMs - new Date(date).getTime()) / 1000);
   if (diff < 60) return "just now";
   const m = Math.floor(diff / 60);
-  if (m < 60) return `${m} minute${m > 1 ? "s" : ""} ago`;
+  if (m < 60) return `${m} min ago`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} hour${h > 1 ? "s" : ""} ago`;
+  if (h < 24) return `${h} hr ago`;
   const d = Math.floor(h / 24);
-  return `${d} day${d > 1 ? "s" : ""} ago`;
+  return `${d} days ago`;
 }
 
-/* ================= STYLES ================= */
-/* unchanged — keep yours exactly */
-
-/* ================= STYLES (UNCHANGED) ================= */
+/* ================= STYLES (UNCHANGED UI) ================= */
 
 const overlay = {
   position: "fixed",
@@ -275,6 +299,17 @@ const header = { display: "flex", justifyContent: "space-between" };
 const title = { fontSize: 20, fontWeight: 700 };
 const subTitle = { fontSize: 13, color: "#64748b" };
 const closeBtn = { fontSize: 24, border: "none", background: "transparent" };
+
+const statusBox = {
+  marginTop: 12,
+  padding: "10px 14px",
+  borderRadius: 12,
+  background: "#f8fafc",
+  border: "1px solid #e5e7eb",
+  fontSize: 13,
+  fontWeight: 600,
+  color: "#111",
+};
 
 const metaGrid = {
   display: "grid",

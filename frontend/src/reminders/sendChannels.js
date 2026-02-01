@@ -10,6 +10,15 @@ export const SEND_CHANNELS = {
 };
 
 /* ======================================================
+   BACKEND URL (LOCAL + PRODUCTION SAFE)
+====================================================== */
+
+const EMAIL_API =
+  import.meta.env.MODE === "development"
+    ? "http://127.0.0.1:8001"
+    : "https://freelancer-cashflow-guard.onrender.com";
+
+/* ======================================================
    SEND DISPATCHER
 ====================================================== */
 
@@ -38,12 +47,12 @@ async function sendManual() {
 }
 
 /* ======================================================
-   EMAIL (Python SMTP backend)
+   EMAIL (Python SMTP Backend)
 ====================================================== */
 
 async function sendEmail(reminder) {
   try {
-    const res = await fetch("http://127.0.0.1:8001/send-email", {
+    const res = await fetch(`${EMAIL_API}/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,16 +65,17 @@ async function sendEmail(reminder) {
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || "Email failed");
+      return {
+        success: false,
+        error: "Email failed to send.",
+      };
     }
 
     return { success: true, mode: "email" };
   } catch (err) {
-    alert(
-      "Email service is not reachable.\n\n" +
-      "Is the Python server running on port 8001?"
-    );
-    throw err;
+    return {
+      success: false,
+      error: "Email service unavailable.",
+    };
   }
 }
