@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 
 import LogoMark from "../../components/ui/LogoMark";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuthStore();
@@ -13,18 +14,30 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // ✅ prevents spam clicks
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
+    if (loading) return;
+    setLoading(true);
+
     try {
       await login(email, password);
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      // ✅ Friendly rate limit message
+      if (err.message.toLowerCase().includes("rate limit")) {
+        setError("Too many login attempts. Please wait 10 minutes and try again.");
+      } else {
+        setError(err.message);
+      }
     }
+
+    setLoading(false);
   };
 
   return (
@@ -65,11 +78,13 @@ export default function Login() {
             className="toggle-password"
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? "🙈" : "👁️"}
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </span>
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
         <p className="auth-footer">
           Don’t have an account? <Link to="/signup">Sign up</Link>
