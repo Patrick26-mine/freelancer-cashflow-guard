@@ -24,7 +24,6 @@ export const useAuthStore = create((set) => ({
       email,
       password,
       options: {
-        // ✅ Redirect user back after confirmation
         emailRedirectTo:
           "https://freelancer-cashflow-guard.vercel.app/login",
       },
@@ -32,8 +31,8 @@ export const useAuthStore = create((set) => ({
 
     if (error) throw error;
 
-    // ✅ Auto Create Profile Row (Only on Signup)
-    if (data?.user) {
+    // ✅ Create Profile Row Automatically
+    if (data.user) {
       await supabase.from("user_profiles").insert({
         user_id: data.user.id,
         username: email.split("@")[0],
@@ -45,16 +44,30 @@ export const useAuthStore = create((set) => ({
   },
 
   /* ========================
-     LOGIN (FIXED ✅)
+     LOGIN (✅ FIXED FOR iOS)
   ======================== */
   login: async (email, password) => {
-    const { data, error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (error) throw error;
+    if (error) {
+      // ✅ Clean Friendly Messages
+      if (error.message.toLowerCase().includes("email not confirmed")) {
+        throw new Error(
+          "Please confirm your email first (check inbox/spam)."
+        );
+      }
+
+      if (error.message.toLowerCase().includes("rate limit")) {
+        throw new Error(
+          "Too many attempts. Please wait 1–2 minutes and try again."
+        );
+      }
+
+      throw error;
+    }
 
     set({ user: data.user });
     return data;
