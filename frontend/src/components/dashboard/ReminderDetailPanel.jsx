@@ -18,7 +18,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
   const [lastSentAtLocal, setLastSentAtLocal] = useState(null);
   const [now, setNow] = useState(Date.now());
 
-  /* ===== PREMIUM STATUS ALERT ===== */
+  /* ===== STATUS MESSAGE ===== */
   const [statusMsg, setStatusMsg] = useState("");
 
   useEffect(() => {
@@ -49,9 +49,6 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
   /* ================= ACTIONS ================= */
 
   async function markAsSent(channel) {
-    const result = await sendReminder({ channel, reminder });
-    if (!result?.success) return;
-
     const sentAt = new Date().toISOString();
 
     const { error } = await supabase.from("invoice_reminders").insert({
@@ -82,32 +79,24 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
 
     setStatusMsg("Sending email...");
 
-    try {
-      const { error } = await supabase.functions.invoke(
-        "send-reminder-email",
-        {
-          body: {
-            to: reminder.client_email,
-            subject: `Payment reminder — Invoice ${reminder.invoice_number}`,
-            message: reminder.message,
-          },
-        }
-      );
+    // ✅ Send via backend dispatcher
+    const result = await sendReminder({
+      channel: SEND_CHANNELS.EMAIL,
+      reminder,
+    });
 
-      if (error) {
-        setStatusMsg("❌ Email could not be sent.");
-        setTimeout(() => setStatusMsg(""), 3000);
-        return;
-      }
-
-      await markAsSent(SEND_CHANNELS.EMAIL);
-
-      setStatusMsg("✅ Email sent successfully.");
-      setTimeout(() => setStatusMsg(""), 3000);
-    } catch {
-      setStatusMsg("⚠ Email service unavailable.");
-      setTimeout(() => setStatusMsg(""), 3000);
+    // ❌ Failed
+    if (!result.success) {
+      setStatusMsg("❌ " + result.error);
+      setTimeout(() => setStatusMsg(""), 4000);
+      return;
     }
+
+    // ✅ Success
+    await markAsSent(SEND_CHANNELS.EMAIL);
+
+    setStatusMsg("✅ Email sent successfully.");
+    setTimeout(() => setStatusMsg(""), 3500);
   }
 
   function copyMessage() {
@@ -132,9 +121,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
             <h3 style={title}>Reminder Preview</h3>
             <div style={subTitle}>
               Invoice <strong>{reminder.invoice_number}</strong>{" "}
-              <span style={toneBadge(reminder.tone)}>
-                {reminder.tone}
-              </span>
+              <span style={toneBadge(reminder.tone)}>{reminder.tone}</span>
             </div>
           </div>
           <button onClick={onClose} style={closeBtn}>
@@ -142,7 +129,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
           </button>
         </div>
 
-        {/* ✅ STATUS MESSAGE */}
+        {/* ✅ STATUS */}
         {statusMsg && <div style={statusBox}>{statusMsg}</div>}
 
         {/* META */}
@@ -168,11 +155,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
 
           <div style={sendViaOptions}>
             <span
-              style={
-                mode === SEND_CHANNELS.MANUAL
-                  ? sendViaActive
-                  : sendViaOption
-              }
+              style={mode === SEND_CHANNELS.MANUAL ? sendViaActive : sendViaOption}
               onClick={() => setMode(SEND_CHANNELS.MANUAL)}
             >
               Manual
@@ -186,9 +169,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
                     : sendViaOption
                   : sendViaDisabled
               }
-              onClick={
-                hasEmail ? () => setMode(SEND_CHANNELS.EMAIL) : undefined
-              }
+              onClick={hasEmail ? () => setMode(SEND_CHANNELS.EMAIL) : undefined}
             >
               Email
             </span>
@@ -308,7 +289,6 @@ const statusBox = {
   border: "1px solid #e5e7eb",
   fontSize: 13,
   fontWeight: 600,
-  color: "#111",
 };
 
 const metaGrid = {

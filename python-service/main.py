@@ -4,23 +4,17 @@ from pydantic import BaseModel, EmailStr
 import smtplib
 import os
 from email.message import EmailMessage
-from dotenv import load_dotenv
-
-# Load .env locally (Render ignores this, uses dashboard ENV)
-load_dotenv()
 
 app = FastAPI()
 
 # =========================
-# ✅ CORS (LOCAL + VERCEL SAFE)
+# ✅ CORS SAFE
 # =========================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-
-        # ✅ Your Vercel Frontend Domain
         "https://freelancer-cashflow-guard.vercel.app",
     ],
     allow_credentials=True,
@@ -29,7 +23,7 @@ app.add_middleware(
 )
 
 # =========================
-# ✅ ENV VARIABLES (Render Dashboard)
+# ENV VARIABLES
 # =========================
 GMAIL_EMAIL = os.getenv("GMAIL_EMAIL")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
@@ -42,14 +36,12 @@ class EmailRequest(BaseModel):
     subject: str
     message: str
 
-
 # =========================
-# HEALTH CHECK ROUTE (IMPORTANT)
+# ✅ HEALTH CHECK ROUTE (Fixes UptimeRobot)
 # =========================
 @app.get("/")
-def home():
-    return {"status": "Email API is running ✅"}
-
+def health():
+    return {"status": "Backend is alive ✅"}
 
 # =========================
 # EMAIL SEND ROUTE
@@ -57,11 +49,10 @@ def home():
 @app.post("/send-email")
 def send_email(data: EmailRequest):
 
-    # ✅ Prevent missing ENV crash
     if not GMAIL_EMAIL or not GMAIL_APP_PASSWORD:
         return {
             "success": False,
-            "error": "Server email credentials not configured."
+            "error": "Server email credentials missing."
         }
 
     try:
@@ -71,7 +62,6 @@ def send_email(data: EmailRequest):
         msg["Subject"] = data.subject
         msg.set_content(data.message)
 
-        # ✅ Gmail SMTP Secure Send
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             smtp.login(GMAIL_EMAIL, GMAIL_APP_PASSWORD)
             smtp.send_message(msg)
@@ -79,7 +69,4 @@ def send_email(data: EmailRequest):
         return {"success": True}
 
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
