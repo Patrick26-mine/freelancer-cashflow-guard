@@ -1,8 +1,3 @@
-/* ======================================================
-   SEND CHANNEL CONTRACT
-   Manual | Email | WhatsApp
-====================================================== */
-
 export const SEND_CHANNELS = {
   MANUAL: "manual",
   EMAIL: "email",
@@ -10,13 +5,9 @@ export const SEND_CHANNELS = {
 };
 
 /* ======================================================
-   EMAIL API URL (GLOBAL SAFE)
+   EMAIL API URL (Vercel Serverless Function)
 ====================================================== */
 
-/**
- * In production → Vercel Serverless Function
- * In local dev  → Same path works if you run `vercel dev`
- */
 const EMAIL_API_URL = "/api/send-email";
 
 /* ======================================================
@@ -29,13 +20,7 @@ export async function sendReminder({ channel, reminder }) {
       return { success: true, mode: "manual" };
 
     case SEND_CHANNELS.EMAIL:
-      return await sendEmail(reminder);
-
-    case SEND_CHANNELS.WHATSAPP:
-      return {
-        success: false,
-        error: "WhatsApp sending not enabled yet.",
-      };
+      return sendEmail(reminder);
 
     default:
       return {
@@ -46,12 +31,11 @@ export async function sendReminder({ channel, reminder }) {
 }
 
 /* ======================================================
-   EMAIL SENDER (Vercel API)
+   EMAIL SEND
 ====================================================== */
 
 async function sendEmail(reminder) {
   try {
-    // Timeout protection
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
@@ -79,10 +63,7 @@ async function sendEmail(reminder) {
       };
     }
 
-    return {
-      success: true,
-      mode: "email",
-    };
+    return { success: true, mode: "email" };
   } catch (err) {
     return {
       success: false,
