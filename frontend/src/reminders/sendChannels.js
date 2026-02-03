@@ -10,13 +10,13 @@ export const SEND_CHANNELS = {
 };
 
 /* ======================================================
-   EMAIL API URL (BEST FIX — NO CORS EVER)
-   Works in:
-   ✅ Localhost
-   ✅ Vercel Production
-   ✅ Mobile
+   EMAIL API URL (GLOBAL SAFE)
 ====================================================== */
 
+/**
+ * In production → Vercel Serverless Function
+ * In local dev  → Same path works if you run `vercel dev`
+ */
 const EMAIL_API_URL = "/api/send-email";
 
 /* ======================================================
@@ -26,10 +26,10 @@ const EMAIL_API_URL = "/api/send-email";
 export async function sendReminder({ channel, reminder }) {
   switch (channel) {
     case SEND_CHANNELS.MANUAL:
-      return sendManual();
+      return { success: true, mode: "manual" };
 
     case SEND_CHANNELS.EMAIL:
-      return sendEmail(reminder);
+      return await sendEmail(reminder);
 
     case SEND_CHANNELS.WHATSAPP:
       return {
@@ -46,22 +46,12 @@ export async function sendReminder({ channel, reminder }) {
 }
 
 /* ======================================================
-   MANUAL SEND
-====================================================== */
-
-async function sendManual() {
-  return { success: true, mode: "manual" };
-}
-
-/* ======================================================
-   EMAIL SEND (Vercel API Route)
-   ✅ Timeout Fix
-   ✅ Clean Errors
+   EMAIL SENDER (Vercel API)
 ====================================================== */
 
 async function sendEmail(reminder) {
   try {
-    // Timeout Controller (prevents infinite loading)
+    // Timeout protection
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
@@ -89,13 +79,16 @@ async function sendEmail(reminder) {
       };
     }
 
-    return { success: true, mode: "email" };
+    return {
+      success: true,
+      mode: "email",
+    };
   } catch (err) {
     return {
       success: false,
       error:
         err.name === "AbortError"
-          ? "Email request timed out. Server may be slow."
+          ? "Email request timed out."
           : "Email service unreachable.",
     };
   }

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export default async (req, res) => {
+export default async function handler(req, res) {
   // ✅ Allow only POST
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -14,12 +14,11 @@ export default async (req, res) => {
   if (!to || !subject || !message) {
     return res.status(400).json({
       success: false,
-      error: "Missing required fields",
+      error: "Missing email fields",
     });
   }
 
   try {
-    // ✅ Gmail SMTP Transport
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -28,7 +27,6 @@ export default async (req, res) => {
       },
     });
 
-    // ✅ Send Email
     await transporter.sendMail({
       from: process.env.GMAIL_EMAIL,
       to,
@@ -46,4 +44,4 @@ export default async (req, res) => {
       error: err.message,
     });
   }
-};
+}

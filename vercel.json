@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/send-email.js": {
+    "api/*.js": {
       "runtime": "nodejs18.x"
     }
   }
