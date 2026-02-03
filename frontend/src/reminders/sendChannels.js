@@ -1,3 +1,8 @@
+/* ======================================================
+   SEND CHANNEL CONTRACT
+   Manual | Email | WhatsApp
+====================================================== */
+
 export const SEND_CHANNELS = {
   MANUAL: "manual",
   EMAIL: "email",
@@ -5,7 +10,8 @@ export const SEND_CHANNELS = {
 };
 
 /* ======================================================
-   EMAIL API URL (Vercel Serverless Function)
+   EMAIL API URL (Vercel Serverless Route)
+   ✅ Works Locally + Production Automatically
 ====================================================== */
 
 const EMAIL_API_URL = "/api/send-email";
@@ -17,10 +23,16 @@ const EMAIL_API_URL = "/api/send-email";
 export async function sendReminder({ channel, reminder }) {
   switch (channel) {
     case SEND_CHANNELS.MANUAL:
-      return { success: true, mode: "manual" };
+      return sendManual();
 
     case SEND_CHANNELS.EMAIL:
       return sendEmail(reminder);
+
+    case SEND_CHANNELS.WHATSAPP:
+      return {
+        success: false,
+        error: "WhatsApp sending not enabled yet.",
+      };
 
     default:
       return {
@@ -31,11 +43,23 @@ export async function sendReminder({ channel, reminder }) {
 }
 
 /* ======================================================
-   EMAIL SEND
+   CHANNEL IMPLEMENTATIONS
+====================================================== */
+
+async function sendManual() {
+  return { success: true, mode: "manual" };
+}
+
+/* ======================================================
+   EMAIL (Vercel Serverless Function)
+   ✅ No CORS
+   ✅ No Render Sleeping
+   ✅ Timeout Protected
 ====================================================== */
 
 async function sendEmail(reminder) {
   try {
+    // ✅ Prevent infinite loading
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
@@ -54,8 +78,10 @@ async function sendEmail(reminder) {
 
     clearTimeout(timeout);
 
+    // ✅ Safe JSON parse
     const data = await res.json();
 
+    // ✅ Backend returned failure
     if (!data.success) {
       return {
         success: false,
@@ -63,7 +89,11 @@ async function sendEmail(reminder) {
       };
     }
 
-    return { success: true, mode: "email" };
+    // ✅ Success
+    return {
+      success: true,
+      mode: "email",
+    };
   } catch (err) {
     return {
       success: false,
