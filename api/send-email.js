@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer";
 
-export default async function handler(req, res) {
-  // Only allow POST
+export default async (req, res) => {
+  // ✅ Allow only POST
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      error: "Method Not Allowed",
+      error: "Only POST requests allowed",
     });
   }
 
@@ -14,12 +14,12 @@ export default async function handler(req, res) {
   if (!to || !subject || !message) {
     return res.status(400).json({
       success: false,
-      error: "Missing email fields",
+      error: "Missing required fields",
     });
   }
 
   try {
-    // Gmail SMTP Transport
+    // ✅ Gmail SMTP Transport
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       },
     });
 
-    // Send Email
+    // ✅ Send Email
     await transporter.sendMail({
       from: process.env.GMAIL_EMAIL,
       to,
@@ -46,4 +46,4 @@ export default async function handler(req, res) {
       error: err.message,
     });
   }
-}
+};
