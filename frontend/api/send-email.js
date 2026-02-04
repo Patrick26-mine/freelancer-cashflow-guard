@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      error: "Method Not Allowed"
+      error: "Method Not Allowed",
     });
   }
 
@@ -24,33 +24,34 @@ export default async function handler(req, res) {
   if (!to || !subject || !message) {
     return res.status(400).json({
       success: false,
-      error: "Missing email fields"
+      error: "Missing email fields",
     });
   }
 
   try {
+    // ✅ Use correct Vercel ENV variables
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+        user: process.env.GMAIL_EMAIL,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
     });
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.GMAIL_EMAIL,
       to,
       subject,
-      text: message
+      text: message,
     });
 
     return res.status(200).json({
-      success: true
+      success: true,
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: err.message
+      error: err.message,
     });
   }
 }
