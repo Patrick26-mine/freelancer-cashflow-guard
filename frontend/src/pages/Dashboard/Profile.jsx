@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import { useThemeStore } from "../../store/themeStore";
 import { supabase } from "../../lib/supabaseClient";
@@ -6,7 +7,9 @@ import "./Profile.css";
 
 export default function Profile() {
   const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
   const colors = useThemeStore((s) => s.colors);
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
 
@@ -37,6 +40,13 @@ export default function Profile() {
     alert("Copied!");
   }
 
+  /* ✅ Logout */
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setUser(null);
+    navigate("/login");
+  }
+
   return (
     <div className="profile-page">
       {/* TITLE */}
@@ -52,7 +62,6 @@ export default function Profile() {
           <div className="avatar-circle">{letter}</div>
 
           <div className="hero-meta">
-            {/* ✅ Email stays inside */}
             <div className="hero-email" title={user.email}>
               {user.email}
             </div>
@@ -69,7 +78,6 @@ export default function Profile() {
         <section className="profile-section">
           <h4>Account</h4>
 
-          {/* ✅ User ID collapses + tooltip + copy */}
           <div className="info-row">
             <span>User ID</span>
 
@@ -92,7 +100,6 @@ export default function Profile() {
             </code>
           </div>
 
-          {/* ✅ Highlight Email */}
           <div className="info-row">
             <span>Email</span>
             <strong
@@ -107,7 +114,6 @@ export default function Profile() {
             </strong>
           </div>
 
-          {/* ✅ Highlight Username */}
           <div className="info-row">
             <span>Username</span>
             <strong
@@ -122,6 +128,26 @@ export default function Profile() {
             </strong>
           </div>
         </section>
+
+        <div className="divider" />
+
+        {/* ✅ LOGOUT */}
+        <div style={{ textAlign: "right" }}>
+          <button
+            onClick={handleLogout}
+            style={{
+              background: "#fee2e2",
+              color: "#991b1b",
+              border: "1px solid #fecaca",
+              borderRadius: 12,
+              padding: "10px 18px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Log out
+          </button>
+        </div>
       </div>
     </div>
   );

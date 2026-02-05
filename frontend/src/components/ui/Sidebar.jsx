@@ -8,14 +8,13 @@ import {
   Settings,
   LogOut,
   User,
-  ChevronUp,
 } from "lucide-react";
 
 import { useSidebarStore } from "../../store/sidebarStore";
 import { useAuthStore } from "../../store/authStore";
 import { supabase } from "../../lib/supabaseClient";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../ui/Sidebar.css";
 
 export default function Sidebar() {
@@ -25,10 +24,8 @@ export default function Sidebar() {
   const { isCollapsed, setCollapsed } = useSidebarStore();
   const user = useAuthStore((s) => s.user);
 
-  const [openMenu, setOpenMenu] = useState(false);
   const [profile, setProfile] = useState(null);
 
-  // ✅ Mobile detection
   const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
@@ -43,29 +40,22 @@ export default function Sidebar() {
   }, [user]);
 
   const avatarLetter =
-    profile?.username?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase();
+    profile?.username?.[0]?.toUpperCase() ||
+    user?.email?.[0]?.toUpperCase();
 
-  // ✅ Logout Handler
-  const handleLogout = async () => {
+  async function handleLogout() {
     await supabase.auth.signOut();
     useAuthStore.getState().logout();
     navigate("/login");
-  };
+  }
 
   return (
     <aside
       className={`sidebar ${isCollapsed && !isMobile ? "collapsed" : ""}`}
-      onMouseEnter={() => {
-        if (!isMobile) setCollapsed(false);
-      }}
-      onMouseLeave={() => {
-        if (!isMobile) {
-          setCollapsed(true);
-          setOpenMenu(false);
-        }
-      }}
+      onMouseEnter={() => !isMobile && setCollapsed(false)}
+      onMouseLeave={() => !isMobile && setCollapsed(true)}
     >
-      {/* ===== BRAND (Desktop Only) ===== */}
+      {/* ===== BRAND ===== */}
       {!isMobile && (
         <div className="sidebar-top">
           <div className="brand">
@@ -79,7 +69,6 @@ export default function Sidebar() {
                 />
               </svg>
             </div>
-
             {!isCollapsed && (
               <span className="brand-text">Cashflow Guard</span>
             )}
@@ -89,96 +78,98 @@ export default function Sidebar() {
 
       {/* ===== NAV ===== */}
       <nav className="sidebar-nav">
-        <NavItem
-          to="/"
-          icon={<Home size={22} />}
-          active={location.pathname === "/"}
-          mobile={isMobile}
-          label="Dashboard"
-        />
-        <NavItem
-          to="/clients"
-          icon={<Users size={22} />}
-          active={location.pathname === "/clients"}
-          mobile={isMobile}
-          label="Clients"
-        />
-        <NavItem
-          to="/invoices"
-          icon={<FileText size={22} />}
-          active={location.pathname === "/invoices"}
-          mobile={isMobile}
-          label="Invoices"
-        />
-        <NavItem
-          to="/payments"
-          icon={<CreditCard size={22} />}
-          active={location.pathname === "/payments"}
-          mobile={isMobile}
-          label="Payments"
-        />
-        <NavItem
-          to="/reminders"
-          icon={<Bell size={22} />}
-          active={location.pathname === "/reminders"}
-          mobile={isMobile}
-          label="Reminders"
-        />
-        <NavItem
-          to="/settings"
-          icon={<Settings size={22} />}
-          active={location.pathname === "/settings"}
-          mobile={isMobile}
-          label="Settings"
-        />
-        <NavItem
-          to="/profile"
-          icon={<User size={22} />}
-          active={location.pathname === "/profile"}
-          mobile={isMobile}
-          label="Profile"
-        />
+        <NavItem to="/" label="Dashboard" icon={<Home size={22} />} active={location.pathname === "/"} mobile={isMobile} />
+        <NavItem to="/clients" label="Clients" icon={<Users size={22} />} active={location.pathname === "/clients"} mobile={isMobile} />
+        <NavItem to="/invoices" label="Invoices" icon={<FileText size={22} />} active={location.pathname === "/invoices"} mobile={isMobile} />
+        <NavItem to="/payments" label="Payments" icon={<CreditCard size={22} />} active={location.pathname === "/payments"} mobile={isMobile} />
+        <NavItem to="/reminders" label="Reminders" icon={<Bell size={22} />} active={location.pathname === "/reminders"} mobile={isMobile} />
+        <NavItem to="/settings" label="Settings" icon={<Settings size={22} />} active={location.pathname === "/settings"} mobile={isMobile} />
+        <NavItem to="/profile" label="Profile" icon={<User size={22} />} active={location.pathname === "/profile"} mobile={isMobile} />
       </nav>
 
-      {/* ===== FOOTER (Desktop Only) ===== */}
-      {!isMobile && (
+      {/* ===== ACCOUNT FOOTER ===== */}
+      {!isMobile && user && (
         <div className="sidebar-footer">
           <div
-            className="profile-trigger"
-            onClick={() => setOpenMenu(!openMenu)}
+            style={{
+              background: "rgba(255,255,255,0.7)",
+              borderRadius: 16,
+              padding: 14,
+              margin: 12,
+            }}
           >
-            <div className="mini-avatar">
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="avatar" />
-              ) : (
-                avatarLetter
-              )}
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#6366f1",
+                color: "#fff",
+                fontWeight: 800,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 10,
+              }}
+            >
+              {avatarLetter}
             </div>
 
-            {!isCollapsed && (
-              <>
-                <div className="profile-meta">
-                  <p className="profile-email">{profile?.username}</p>
-                  <span className="profile-role">Account</span>
-                </div>
-                <ChevronUp size={18} />
-              </>
-            )}
-          </div>
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 12, color: "#64748b" }}>Account</div>
+              <div
+                style={{
+                  background: "#fff7ed",
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: "#9a3412",
+                  maxWidth: 180,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+                title={user.email}
+              >
+                {user.email}
+              </div>
+            </div>
 
-          {openMenu && !isCollapsed && (
-            <div className="profile-menu">
-              <button onClick={() => navigate("/profile")}>
-                <User size={16} />
-                Profile
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => navigate("/profile")}
+                style={{
+                  flex: 1,
+                  borderRadius: 10,
+                  padding: "6px 10px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: "1px solid #c7d2fe",
+                  background: "#eef2ff",
+                  cursor: "pointer",
+                }}
+              >
+                View Profile
               </button>
 
-              <button onClick={handleLogout} className="danger">
-                <LogOut size={16} />
+              <button
+                onClick={handleLogout}
+                style={{
+                  borderRadius: 10,
+                  padding: "6px 10px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: "1px solid #fecdd3",
+                  background: "#fff1f2",
+                  color: "#9f1239",
+                  cursor: "pointer",
+                }}
+              >
                 Logout
               </button>
             </div>
-          )}
+          </div>
         </div>
       )}
     </aside>
@@ -193,8 +184,6 @@ function NavItem({ to, icon, active, mobile, label }) {
       title={label}
     >
       {icon}
-
-      {/* ✅ Label wrapper added */}
       {!mobile && <span className="nav-label">{label}</span>}
     </Link>
   );

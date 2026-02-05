@@ -77,26 +77,25 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
   async function handleEmailSend() {
     if (!hasEmail || isCooldown) return;
 
-    setStatusMsg("Sending email...");
+    setStatusMsg("Opening Gmail draft...");
 
-    // ✅ Send via backend dispatcher
+    // ✅ Option B: Open Gmail Compose (NOT auto-send)
     const result = await sendReminder({
       channel: SEND_CHANNELS.EMAIL,
       reminder,
     });
 
-    // ❌ Failed
     if (!result.success) {
       setStatusMsg("❌ " + result.error);
       setTimeout(() => setStatusMsg(""), 4000);
       return;
     }
 
-    // ✅ Success
+    // ✅ Mark reminder as sent (user will click Send in Gmail)
     await markAsSent(SEND_CHANNELS.EMAIL);
 
-    setStatusMsg("✅ Email sent successfully.");
-    setTimeout(() => setStatusMsg(""), 3500);
+    setStatusMsg("✅ Gmail opened. Click Send inside Gmail.");
+    setTimeout(() => setStatusMsg(""), 4000);
   }
 
   function copyMessage() {
@@ -155,7 +154,11 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
 
           <div style={sendViaOptions}>
             <span
-              style={mode === SEND_CHANNELS.MANUAL ? sendViaActive : sendViaOption}
+              style={
+                mode === SEND_CHANNELS.MANUAL
+                  ? sendViaActive
+                  : sendViaOption
+              }
               onClick={() => setMode(SEND_CHANNELS.MANUAL)}
             >
               Manual
@@ -203,7 +206,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
           ) : mode === SEND_CHANNELS.MANUAL ? (
             "You have chosen to send this reminder manually."
           ) : (
-            "Clicking “Send via Email” will automatically send this reminder to the client’s email address."
+            "Clicking “Open Gmail” will open a ready-to-send draft in Gmail for the client."
           )}
         </div>
 
@@ -221,7 +224,7 @@ export default function ReminderDetailPanel({ open, reminder, onClose }) {
 
           {!isCooldown && mode === SEND_CHANNELS.EMAIL && (
             <button onClick={handleEmailSend} style={primaryBtn}>
-              Send via Email
+              Open Gmail
             </button>
           )}
 

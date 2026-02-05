@@ -188,7 +188,11 @@ export default function ReminderHistory() {
 
                   <td style={tdStyle}>
                     <span style={viaPill}>
-                      {r.sent_via ? r.sent_via : "Manual"}
+                      {r.sent_via === "email"
+                        ? "Gmail Draft"
+                        : r.sent_via
+                        ? r.sent_via
+                        : "Manual"}
                     </span>
                   </td>
 
